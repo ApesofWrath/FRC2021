@@ -62,21 +62,17 @@ void Robot::RobotInit() {
   JoyThrottle = new frc::Joystick(0);
   JoyWheel = new frc::Joystick(1);
 
-  m_descolor_chooser.AddDefault("None",  Colors::WHITE);
-  m_descolor_chooser.AddObject("Red",    Colors::RED);
-  m_descolor_chooser.AddObject("Blue",   Colors::BLUE);
-  m_descolor_chooser.AddObject("Green",  Colors::GREEN);
-  m_descolor_chooser.AddObject("Yellow", Colors::YELLOW);
+  m_descolor_chooser.SetDefaultOption("None",  Colors::WHITE);
+  m_descolor_chooser.AddOption("Red",    Colors::RED);
+  m_descolor_chooser.AddOption("Blue",   Colors::BLUE);
+  m_descolor_chooser.AddOption("Green",  Colors::GREEN);
+  m_descolor_chooser.AddOption("Yellow", Colors::YELLOW);
 
   frc::SmartDashboard::PutData("Desired Color", &m_descolor_chooser);
-  // talon0 = new TalonSRX(0);
 
-  cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture("coolmethgames.gov", 0);
+  cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture("668.camera.server", 0);
 
 	camera.SetResolution(320, 190);
-	// camera.SetExposureManual(0);
-	// camera.SetBrightness(100);
-
 
   tsm = new TeleopStateMachine(shooter, intake, controlpanel, arm);
   
@@ -100,10 +96,9 @@ void Robot::RobotPeriodic() {
  * make sure to add them to the chooser code above as well.
  */
 void Robot::AutonomousInit() {
-  std::cout << "as get\n";
+
+
   m_container->m_autoSelected = m_container->m_chooser.GetSelected();
-  // m_autoSelected = SmartDashboard::GetString("Auto Selector",
-  //     kAutoNameDefault);
   std::cout << "Auto selected: " << m_container->m_autoSelected << std::endl;
 
   if (m_autonomousCommand != nullptr) {
@@ -112,11 +107,9 @@ void Robot::AutonomousInit() {
   }
 
   m_autonomousCommand = m_container->GetAutonomousCommand();
-  std::cout << "ac gotten\n";
 
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Schedule();
-    std::cout << "ac schedule\n";
   }
 
 
@@ -124,13 +117,6 @@ void Robot::AutonomousInit() {
 }
 
 void Robot::AutonomousPeriodic() {
-  // if (m_container->m_autoSelected == kAutoNameCustom) {
-  //   // Custom Auto goes here
-  // } else {
-  //   // Default Auto goes here
-  // }
-
-  // a_drive->Update();
 
   frc::Pose2d pose = a_drive->GetPose();
 
@@ -143,9 +129,6 @@ void Robot::AutonomousPeriodic() {
   shooter->ShooterStateMachine();
   arm->IntakeArmStateMachine();
   intake->IntakeStateMachine();
-  // pose.
-
-
 }
 void Robot::TeleopInit() {
   frc2::CommandScheduler::GetInstance().Disable();
@@ -158,58 +141,15 @@ void Robot::TeleopInit() {
 }
 void Robot::TeleopPeriodic() {
   
-
-  // if (joyT->GetRawButton(BUTTON_STOP)) {
-  //   controlpanel->Stop();
-  // }
-  // if (joyT->GetRawButton(POSITION_BUTTON)) {
-  //   controlpanel->PositionMode();
-  // }
-  // if (joyT->GetRawButton(ROTATION_BUTTON)) {
-  //   controlpanel->RotationMode();
-  // }
-
-  // frc::SmartDashboard::PutNumber("speed", joyT->GetThrottle());
-
-  // if (joyT->GetRawButton(1)) {
-  //   Falcon_T->Set(ControlMode::PercentOutput, joyT->GetThrottle());
-  //   Falcon_T2->Set(ControlMode::PercentOutput, joyT->GetThrottle());
-  // } else {
-  //   Falcon_T->Set(ControlMode::PercentOutput, 0);
-  //   Falcon_T2->Set(ControlMode::PercentOutput, 0);
-  // }
-
   drive->RunTeleopDrive(JoyThrottle, JoyWheel, true, false, false);
   tsm->StateMachine(tsm->GatherButtonDataFromJoysticks(
-    JoyThrottle, JoyWheel, JoyOp)); //joyOp maybe???
-  // drive->ManualOpenLoopDrive(joyT, joyW);
-  // drive->TeleopWCDrive(joyT,joyW,false,false);
+    JoyThrottle, JoyWheel, JoyOp));
 
-  // T46->Set(ControlMode::PercentOutput, 1.0f);
-
-  // if (joyT->GetRawButton(1)) {
-
-  // } else {
-  //   T46->Set(ControlMode::PercentOutput, 0.0f);
-  // }
-  // controlpanel->StateMachine();
-
-  // if (((currentColor == desiredColor || desiredColor == Colors::WHITE) && !joy->GetTrigger()) || joy->GetRawButton(2)) {
-  //   talon0->Set(ControlMode::PercentOutput, 0);
-  // } else {
-  //   talon0->Set(ControlMode::PercentOutput, CONTROL_WHEEL_SPEED_ON);
-
-  // frc::SmartDashboard::PutNumber("Speed", joy->GetThrottle());
   frc::SmartDashboard::PutString("Last State", TeleopStateMachine::StateName(tsm->last_state));
   frc::SmartDashboard::PutString("Current State", TeleopStateMachine::StateName(tsm->state));
 }
 
 void Robot::UpdateButtons(){
-
-  // rest = joy->GetRawButton(9);
-  // down = joy->GetRawButton(8);
-  // up = joy->GetRawButton(7);
-  
   
 }
 

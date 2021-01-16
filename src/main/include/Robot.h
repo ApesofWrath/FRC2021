@@ -11,7 +11,6 @@
 
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
-// #include <frc/WPILib.h>
 
 #include <frc/Joystick.h>
 #include "ControlPanel.h"
@@ -24,8 +23,8 @@
 #include "Arm.h"
 #include "Intake.h"
 #include <cameraserver/CameraServer.h>
-// #include <frc/WPILib.h>
 #include "Shooter.h"
+
 
 #include "rev/ColorSensorV3.h"
 
@@ -62,8 +61,8 @@ class Robot : public frc::TimedRobot {
   TeleopStateMachine *tsm;
 
   rev::CANSparkMax *neo_1, *neo_2, *neo_3, *neo_4;
-  const float CONTROL_WHEEL_SPEED_ON = 1.0f;
-  const float CONTROL_WHEEL_SPEED_OFF = 0;
+  const double CONTROL_WHEEL_SPEED_ON = 1.0f;
+  const double CONTROL_WHEEL_SPEED_OFF = 0;
 
   void RobotInit() override;
   void RobotPeriodic() override;

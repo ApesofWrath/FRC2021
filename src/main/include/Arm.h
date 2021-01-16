@@ -1,13 +1,12 @@
-#ifndef SRC_ARM_H_
-#define SRC_ARM_H_
+#pragma once
 
 #include <ctre/Phoenix.h>
-// #include <frc/WPILib.h>
 #include "rev/CANSparkMax.h"
 #include <frc/Joystick.h>
 
 #include "Drive/DriveBase.h"
 #include "Macros.h"
+#include "Constants.h"
 
 #define SMART_MODE_THRESHOLD_FWD_SPEED 0.1
 #define SMART_MODE_THRESHOLD_FWD_ACCEL 0.1
@@ -29,11 +28,11 @@ public:
 
   frc::Joystick* joy;
 
-  float armStartPos;
-  float armCurrPos;
-  float targetPos;
+  double armStartPos;
+  double armCurrPos;
+  double targetPos;
 
-  // float upPos = 2;
+  // double upPos = 2;
 
   enum States {
     REST_STATE, UP_STATE, DOWN_STATE
@@ -46,8 +45,8 @@ public:
   const int rightArmSpark = 21; // leader
   const int leftArmSpark = 24; //follower
 
-  const float START_OFFSET = (UP_POSITION/(2*PI))*63;
-  const float DOWN_POS = (DOWN_POSITION/(2*PI))*63;
+  const double START_OFFSET = (UP_POSITION / (2 * apes::PI)) * 63;
+  const double DOWN_POS = (DOWN_POSITION / (2 * apes::PI)) * 63;
 
   void Up();
   void Down();
@@ -63,5 +62,3 @@ public:
  
   
 };
-
-#endif

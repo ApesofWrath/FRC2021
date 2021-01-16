@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <frc/WPILib.h>
 #include <frc/Joystick.h>
 #include "ctre/Phoenix.h"
 #include "AHRS.h"
@@ -228,6 +227,8 @@ private:
 
 };
 
-const double TICKS_TO_DISTANCE=1.0/(2048.0*(84.0/8.0)*(1/(2*PI*3))*(1/0.0254));
+// const double TICKS_TO_DISTANCE = 1.0 / (2048.0 * (84.0 / 8.0) * (1 / (6 * apes::PI)) * (1 / 0.0254));
+const double TICKS_TO_DISTANCE = 2.226463581265717488e-05;
+
 double getSpeedFromTicksPer100Milliseconds(int ticks_per_second);
 double getDistanceFromTicks(int ticks);
