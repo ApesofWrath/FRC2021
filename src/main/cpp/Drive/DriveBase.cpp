@@ -1,6 +1,9 @@
-#include "../../include/Drive/DriveBase.h"
+#include "Drive/DriveBase.h"
 #include "frc/smartdashboard/SmartDashboard.h"
+#include <frc/RobotState.h>
 #include "Macros.h"
+#include "Constants.h"
+#include "frc/RobotState.h"
 
 using namespace std::chrono;
 
@@ -10,7 +13,6 @@ const int VISION_DRIVE = 1;
 const int ROTATION_CONTROLLER = 2;
 int teleop_drive_state = REGULAR;
 int last_drive_state = REGULAR;
-// float PI = 3.1415926535897932;
 
 //vision drive sm
 const int CREATE_VIS_PROF = 0;
@@ -251,10 +253,10 @@ double max_fwd_speed_r = 0;
 double max_yaw_rate_ = 0;
 
 void DriveBase::ManualOpenLoopDrive(Joystick* throttle, Joystick* wheel) {
-	float throttle_val = throttle->GetY();
-	float wheel_val = wheel->GetX();
+	double throttle_val = throttle->GetY();
+	double wheel_val = wheel->GetX();
 
-	float left_out, right_out;
+	double left_out, right_out;
 
 	left_out = throttle_val - wheel_val / 2.0f;
 	right_out = throttle_val + wheel_val / 2.0f;
@@ -320,12 +322,12 @@ void DriveBase::TeleopWCDrive(Joystick *JoyThrottle, //finds targets for the Con
 	if (pos_yaw) { //pos control wheel
 	///	led_solenoid->Set(false);
 
-			double target_heading = init_heading + (-1.0 * JoyWheel->GetX() * (90.0 * PI / 180.0));
+			double target_heading = init_heading + (-1.0 * JoyWheel->GetX() * (90.0 * apes::PI / 180.0));
 		frc::SmartDashboard::PutNumber("init head", init_heading);
 			frc::SmartDashboard::PutNumber("targ head", target_heading);
 		//frc::SmartDashboard::PutNumber("targ yaw to", visionDrive->GetYawToTarget());
 
-			double current_heading = -1.0 * ahrs->GetYaw() * ( PI / 180.0); //degrees to radians, left should be positive
+			double current_heading = -1.0 * ahrs->GetYaw() * ( apes::PI / 180.0); //degrees to radians, left should be positive
 		frc::SmartDashboard::PutNumber("cur head", current_heading);
 			double error_heading = target_heading - current_heading;
 		frc::SmartDashboard::PutNumber("error head", error_heading);
@@ -342,7 +344,7 @@ void DriveBase::TeleopWCDrive(Joystick *JoyThrottle, //finds targets for the Con
 	// k_p_right_vel = 0.015;
 	// k_p_yaw_vel = 20.0;
 
-    double current_heading = -1.0 * ahrs->GetYaw() * ( PI / 180.0); //degrees to radians, left should be positive
+    double current_heading = -1.0 * ahrs->GetYaw() * ( apes::PI / 180.0); //degrees to radians, left should be positive
 		double yaw_angle = 0.0f;
 		double target_heading = last_target_heading;
 
@@ -426,9 +428,9 @@ void DriveBase::RotationController(Joystick *JoyWheel) {
 //	frc::SmartDashboard::PutNumber("joyWheel", JoyWheel->GetX());
 
 	double target_heading = init_heading
-			+ (-1.0 * JoyWheel->GetX() * (90.0 * PI / 180.0)); //scaling, conversion to radians,left should be positive
+			+ (-1.0 * JoyWheel->GetX() * (90.0 * apes::PI / 180.0)); //scaling, conversion to radians,left should be positive
 
-	double current_heading = -1.0 * ahrs->GetYaw() * ( PI / 180.0); //degrees to radians, left should be positive
+	double current_heading = -1.0 * ahrs->GetYaw() * ( apes::PI / 180.0); //degrees to radians, left should be positive
 
 //	frc::SmartDashboard::PutNumber("current heading", current_heading);
 //	frc::SmartDashboard::PutNumber("target heading", target_heading);
@@ -461,7 +463,7 @@ void DriveBase::Controller(double ref_kick,
 		double target_vel_right, double target_vel_kick) { //last parameter targets are for auton
 
 	double yaw_rate_current = -1.0 * (double) ahrs->GetRate(); //might be rad/ss
-		//	* (double) ((PI) / 180.0); //left should be positive
+		//	* (double) ((apes::PI) / 180.0); //left should be positive
 
 	 // frc::SmartDashboard::PutNumber("yaw vel", yaw_rate_current);
 	 frc::SmartDashboard::PutNumber("yaw pos", ahrs->GetYaw());
@@ -707,7 +709,7 @@ double DriveBase::GetRightVel() { //
 
 double DriveBase::GetYawPos() {
 
-	double y_dis = -1.0 * ahrs->GetYaw() * (double) (PI / 180);
+	double y_dis = -1.0 * ahrs->GetYaw() * (double) (apes::PI / 180);
 	return y_dis;
 
 }

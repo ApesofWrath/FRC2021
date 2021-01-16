@@ -1,6 +1,7 @@
 #include "Auton.h"
 
 #include "Drive/DriveBase.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <iostream>
 
 
@@ -40,17 +41,8 @@ void AutonDrive::Periodic() {
 }
 
 void AutonDrive::TankDriveVolts(units::volt_t left, units::volt_t right) {
-    std::cout << GetWheelSpeeds().left << "\n";
-    // t_left1.Set(left / units::volt_t(pdp->GetVoltage()));
     m_leftMotors->SetVoltage(left);
-    // t_left2.Set(left / units::volt_t(pdp->GetVoltage()));
-    // fx_left1->Set(ControlMode::PercentOutput, 1.0f);
-    // fx_left2->Set(ControlMode::PercentOutput, 1.0f);
-
-    std::cout << GetWheelSpeeds().right << "\n";
     m_rightMotors->SetVoltage(right);
-    // fx_right1->Set(ControlMode::PercentOutput, -1.0f);
-    // fx_right2->Set(ControlMode::PercentOutput, -1.0f);
 
     frc::SmartDashboard::PutNumber("m_ left", left.value());
     frc::SmartDashboard::PutNumber("m_ right", right.value());

@@ -2,12 +2,12 @@
 
 #include <string>
 
-//#include <frc/WPILib.h>
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <ctre/Phoenix.h>
 #include <frc/Joystick.h>
 #include "rev/CANSparkMax.h"
 #include "Macros.h"
+#include "Constants.h"
 
 #define SHOOTER_SPEED 594.3893301
 
@@ -18,8 +18,8 @@ class Shooter {
     const int topRollerSpark = 2;
     const int bottomRollerSpark = 3;
 
-    const int topShootSpeed = ((SHOOTER_SPEED)*60)/(2*PI)/2;
-    const int bottomShootSpeed = ((SHOOTER_SPEED)*60)/(2*PI);
+    const int topShootSpeed = ((SHOOTER_SPEED)*60)/(2*apes::PI)/2;
+    const int bottomShootSpeed = ((SHOOTER_SPEED)*60)/(2*apes::PI);
 
     const int INIT_STATE_H = 0;
     const int INTAKE_STATE_H = 1;
@@ -33,8 +33,8 @@ class Shooter {
     int last_shooter_state = INIT_STATE_H;
     int shooter_state = INIT_STATE_H;
 
-    float speed = 0;
-    float beltPOS;
+    double speed = 0;
+    double beltPOS;
 
     // TalonSRX *canTalonBelt, *canTalonTopW, *canTalonBottomW;
     rev::CANSparkMax *beltNEO, *topWNEO, *botWNEO;

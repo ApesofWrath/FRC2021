@@ -5,8 +5,6 @@
 
 
 #include <ctre/Phoenix.h>
-#include <frc/WPILib.h>
-// #include "Robot.h"
 #include "rev/CANSparkMax.h"
 #include "Arm.h"
 #include "Shooter.h"
@@ -26,9 +24,9 @@ public:
 
   const int intakeWheelSpark = 22;
 
-  const float IDLE_WHEEL_SPEED = 0.1;
-  const float IN_WHEEL_SPEED = 0.35;
-  const float OUT_WHEEL_SPEED = -0.35;
+  const double IDLE_WHEEL_SPEED = 0.1;
+  const double IN_WHEEL_SPEED = 0.35;
+  const double OUT_WHEEL_SPEED = -0.35;
 
     Intake();
 

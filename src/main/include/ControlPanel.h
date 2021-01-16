@@ -4,6 +4,7 @@
 #include "rev/CANSparkMax.h"
 #include <ctre/Phoenix.h>
 #include "Macros.h"
+#include "Constants.h"
 
 #define COLOR_WHEEL_ROTATIONS 14.95996502
 #define COLOR_SPEED 60.31857895
@@ -35,19 +36,19 @@ public:
     const int controlPanelRotatorSpark = 32;
 
     // const int rotCount = 3;
-    // const float rotRatio = 10; //Change to actual ratio @ comp
+    // const double rotRatio = 10; //Change to actual ratio @ comp
 
-    const float rotationModeRot = (COLOR_WHEEL_ROTATIONS/(2*PI))*63;
-    const int controlPanelGoSpeed = (COLOR_SPEED/(2*PI))*60;
+    const double rotationModeRot = (COLOR_WHEEL_ROTATIONS/(2*apes::PI))*63;
+    const int controlPanelGoSpeed = (COLOR_SPEED/(2*apes::PI))*60;
     const int controlPanelStopSpeed = 0;
-    const float armRaisePos = (ARM_POSITION/(2*PI))*63;
-    float controlPanelArmStartPos;
-    float controlPanelWheelStartPos;
+    const double armRaisePos = (ARM_POSITION/(2*apes::PI))*63;
+    double controlPanelArmStartPos;
+    double controlPanelWheelStartPos;
 
 
 
     // const int CONTROL_PANEL_TALON = 1000;
-    const float CONTROL_PANEL_SPEEN_ON = 1.0f;
+    const double CONTROL_PANEL_SPEEN_ON = 1.0f;
     enum States {
         IDLE,
         POSITION_MODE,

@@ -1,11 +1,9 @@
 #pragma once
 
+#include <units/units.h>
 #include "Constants.h"
 
 #define PRACTICE 0 //0 uses the consts on the bottom //comp gains work ok on practice bot too
-
-#define PI 3.1415926535897932
-
 
 #if PRACTICE //bot still w/o superstructure
 
@@ -105,7 +103,7 @@ const double MAX_JERK_VIS = 10000.0;
 
 const double MAX_FORWARD_MPS = 4.89154;
 
-const double MAX_Y_RPM = MAX_FORWARD_MPS / ((2*PI * 3) * 0.0254) * 60;
+const double MAX_Y_RPM = MAX_FORWARD_MPS / ((2 * apes::PI * 3) * 0.0254) * 60;
 const double ACTUAL_MAX_Y_RPM = MAX_Y_RPM;
 
 const double ACTUAL_MAX_Y_RPM_AUTON = ACTUAL_MAX_Y_RPM;
