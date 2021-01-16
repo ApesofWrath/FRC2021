@@ -1,0 +1,6 @@
+field  width: 7.210 m
+field length: 8.255 m
+
+goal   pos: (7.6454 m, 3.0988 m)
+start  pos: (1.2573 m, 5.1018 m)
+center pos: (4.1275 m, 3.6050 m)
