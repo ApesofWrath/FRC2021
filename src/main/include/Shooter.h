@@ -21,7 +21,10 @@ class Shooter {
     const int topShootSpeed = ((SHOOTER_SPEED)*60)/(2*apes::PI)/2;
     const int bottomShootSpeed = ((SHOOTER_SPEED)*60)/(2*apes::PI);
 
-    enum ShooterState {INIT_STATE, INTAKE_STATE, STOP_STATE, SHOOT_STATE, WAITING_STATE};
+    enum ShooterState {
+        INIT_STATE, INTAKE_STATE, STOP_STATE, 
+        SHOOT_STATE, WAITING_STATE
+    };
     
     // const int ONEROT_STATE_H = 5;
 
