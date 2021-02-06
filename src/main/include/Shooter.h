@@ -14,12 +14,12 @@
 class Shooter {
     public:
 
-    const int beltSpark = 1;
-    const int topRollerSpark = 2;
-    const int bottomRollerSpark = 3;
+    // const int beltSpark = 1;
+    // const int topRollerSpark = 2;
+    // const int bottomRollerSpark = 3;
 
-    const int topShootSpeed = ((SHOOTER_SPEED)*60)/(2*apes::PI)/2;
-    const int bottomShootSpeed = ((SHOOTER_SPEED)*60)/(2*apes::PI);
+    const int topShootSpeed = ((SHOOTER_SPEED) * 60) / (2 * apes::PI) / 2;
+    const int bottomShootSpeed = ((SHOOTER_SPEED) * 60) / (2 * apes::PI);
 
     enum ShooterState {
         INIT_STATE, INTAKE_STATE, STOP_STATE, 
@@ -32,7 +32,7 @@ class Shooter {
     ShooterState shooter_state = INIT_STATE;
 
     double speed = 0;
-    double beltPOS;
+    double belt_position;
 
     const int indexerTalonID = 0;
     const int topWTalonID = 0;

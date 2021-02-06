@@ -5,13 +5,18 @@
     double shootkP = 10.8, shootkI = 0, shootkD = 0.0, shootkIz = 0, shootkFF = 0, shootkMaxOutput = 0.3, shootkMinOutput = -0.3; // Not tuned yet
     // double beltkP = 10.8, beltkI = 0, beltkD = 0.0, beltkIz = 0, beltkFF = 0, beltkMaxOutput = 0.3, beltkMinOutput = -0.3;
     
+    /*
+    TODO:
+    Add 2 NEOs for belts 
+    Change the bottom wheel to a TalonFX for Falcon 500
+    */
 
     Shooter::Shooter() {
         shooter_state = INIT_STATE;
 
         indexerTalon = new TalonSRX(indexerTalonID);
         topWTalon = new WPI_TalonFX(topWTalonID);
-        bottomWSpark = new rev::CANSparkMax(bottomWSparkID, rev::CANSparkMax::MotorType::kBrushless);
+        bottomWSpark = new rev::CANSparkMax(bottomWSparkID, rev::CANSparkMax::MotorType::kBrushless); // change to falcon 500
 
         indexerTalon->SetNeutralMode(NeutralMode::Coast);
         topWTalon->SetNeutralMode(NeutralMode::Brake);
@@ -20,6 +25,7 @@
 
         topWTalon->ConfigFactoryDefault();
         topWTalon->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
+        topWTalon->SetInverted(false);
         topWTalon->ConfigNominalOutputForward(0, 10); // probably dont need, nominal means ideal/normal? 
         topWTalon->ConfigNominalOutputReverse(0, 10);
         topWTalon->ConfigPeakOutputForward(1, 10);
@@ -109,7 +115,7 @@
                 last_shooter_state = SHOOT_STATE;
                 break;
 
-                case WAITING_STATE:
+                case WAITING_STATE: 
                 frc::SmartDashboard::PutString("Shooter ", "waiting");
                 Waiting();
                 last_shooter_state = WAITING_STATE;
@@ -130,7 +136,7 @@
         // botWPID->SetReference(bottomShootSpeed, rev::ControlType::kVelocity);
 
         indexerTalon->Set(ControlMode::PercentOutput, 1.0);
-        topWTalon->Set(ControlMode::MotionMagic, 668); // need to config, when get testing equip finalize method of moving wheels
+        topWTalon->Set(ControlMode::MotionMagic, topWTalon->GetSelectedSensorPosition(0) + 668); // need to config, when get testing equip finalize method of moving wheels
         bottomWSpark->Set(1.0);
     }
 
@@ -155,12 +161,12 @@
 
     }
 
-    void Shooter::Waiting(){
+    void Shooter::Waiting(){ // slower than shooting
         // beltNEO->Set(0);
         // topWNEO->Set(0);
         // botWNEO->Set(0);
 
-        indexerTalon->Set(ControlMode::PercentOutput, 1.0);
+        indexerTalon->Set(ControlMode::PercentOutput, 0.1);
         topWTalon->Set(ControlMode::PercentOutput, 0.0);
         bottomWSpark->Set(0);
         topWTalon->SetSelectedSensorPosition(0, 0, 10); // zero after shooting

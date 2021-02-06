@@ -109,7 +109,7 @@ void TeleopStateMachine::StateMachine(ButtonData data) {
         case WAIT_FOR_BUTTON_STATE:
           arm->intake_arm_state = arm->UP_STATE;
           intake->intake_state = intake->STOP_STATE;
-          shooter->shooter_state = shooter->STOP_STATE;
+          shooter->shooter_state = shooter->WAITING_STATE;
           control_panel->state = control_panel->IDLE;
           last_state = WAIT_FOR_BUTTON_STATE;
         break;
@@ -118,12 +118,12 @@ void TeleopStateMachine::StateMachine(ButtonData data) {
         case INTAKE_STATE:
           arm->intake_arm_state = arm->DOWN_STATE;
           intake->intake_state = intake->IN_STATE;
-          shooter->shooter_state = shooter->STOP_STATE;
+          shooter->shooter_state = shooter->INTAKE_STATE;
           control_panel->state = control_panel->IDLE;
           last_state = INTAKE_STATE;
         break;
 
-        case INTAKE_SHOOTER_STATE:
+        case INTAKE_SHOOTER_STATE: // i hope we arent using this
           shooter->shooter_state = shooter->INTAKE_STATE;
           arm->intake_arm_state = arm->UP_STATE;
           control_panel->state = control_panel->IDLE;
@@ -143,7 +143,7 @@ void TeleopStateMachine::StateMachine(ButtonData data) {
           control_panel->state = control_panel->ROTATION_MODE;
           arm->intake_arm_state = arm->UP_STATE;
           intake->intake_state = intake->STOP_STATE;
-          shooter->shooter_state = shooter->STOP_STATE;
+          shooter->shooter_state = shooter->WAITING_STATE;
           last_state = ROTATION_MODE_CONTROL_PANEL_STATE;
         break;
 
@@ -151,14 +151,14 @@ void TeleopStateMachine::StateMachine(ButtonData data) {
           arm->intake_arm_state = arm->REST_STATE;
           intake->intake_state = intake->STOP_STATE;
           control_panel->state = control_panel->IDLE;
-          shooter->shooter_state = shooter->STOP_STATE;
+          shooter->shooter_state = shooter->WAITING_STATE;
           arm->MoveToPosition(arm->armStartPos);
 
         case POSITION_MODE_CONTROL_PANEL_STATE:
           control_panel->state = control_panel->POSITION_MODE;
           arm->intake_arm_state = arm->UP_STATE;
           intake->intake_state = intake->STOP_STATE;
-          shooter->shooter_state = shooter->STOP_STATE;
+          shooter->shooter_state = shooter->WAITING_STATE;
           last_state = POSITION_MODE_CONTROL_PANEL_STATE;
         break;
 
@@ -168,7 +168,7 @@ void TeleopStateMachine::StateMachine(ButtonData data) {
             arm->intake_arm_state = arm->DOWN_STATE;
           }
           control_panel->state = control_panel->IDLE;
-          shooter->shooter_state = shooter->STOP_STATE;
+          shooter->shooter_state = shooter->WAITING_STATE;
           last_state = INTAKE_OUT_STATE;
         break;
 
