@@ -14,12 +14,14 @@
 class Shooter {
     public:
 
-    // const int beltSpark = 1;
     // const int topRollerSpark = 2;
     // const int bottomRollerSpark = 3;
 
     const int topShootSpeed = ((SHOOTER_SPEED) * 60) / (2 * apes::PI) / 2;
     const int bottomShootSpeed = ((SHOOTER_SPEED) * 60) / (2 * apes::PI);
+
+    const int frontBeltSpeed = 668;
+    const int backBeltSpeed = 668;
 
     enum ShooterState {
         INIT_STATE, INTAKE_STATE, STOP_STATE, 
@@ -34,22 +36,22 @@ class Shooter {
     double speed = 0;
     double belt_position;
 
-    const int indexerTalonID = 0;
-    const int topWTalonID = 0;
-    const int bottomWSparkID = 0;
 
-    // TalonSRX *canTalonBelt, *canTalonTopW, *canTalonBottomW;
-    // rev::CANSparkMax *beltNEO, *topWNEO, *botWNEO;
-    // rev::CANPIDController *beltPID, *topWPID, *botWPID;
-    // rev::CANEncoder *beltEncoder, *topWEncoder, *botWEncoder;
+    const int frontBeltSpark = 668;
+    const int backBeltSpark = 668;
+    const int indexerTalonID = 668;
+    const int topWTalonID = 668;
+    const int bottomWTalonID = 668;
+
+    rev::CANSparkMax *frontBeltNEO, *backBeltNEO;
+    rev::CANPIDController *frontBeltPID, *backBeltPID;
+    rev::CANEncoder *frontBeltEncoder, *backBeltEncoder;
+
     frc::Joystick* joy;
     
     TalonSRX* indexerTalon;
     WPI_TalonFX* topWTalon;
-
-    rev::CANSparkMax* bottomWSpark;
-    rev::CANPIDController* bottomWSparkPID;
-
+    WPI_TalonFX* bottomWTalon;
     // const int INIT_STATE_H = 0;
     // const int INTAKE_STATE_H = 1;
     // const int STOP_STATE_H = 2;
