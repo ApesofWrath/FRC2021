@@ -65,6 +65,9 @@ class Shooter {
     void Stop();
     void Waiting();
     void Reverse();
+    void ConfigureSpark(rev::CANSparkMax *spark, rev::CANPIDController *PIDController, double kP, double kI, double kD, 
+    double kIz, double kFF, double minOut, double maxOut, rev::CANSparkMax::IdleMode idleMode);
+    void ConfigureTalon(WPI_TalonFX *talon, int pidSlot, int pidType, int timeoutMs, bool inverted, int nominalForward, int nominalReverse, int peakForward, int peakReverse, int profileSlot, int kF, int kP, int kI, int kD, int cruiseVelocity, int acceleration);
 
     void ShooterStateMachine();
 };

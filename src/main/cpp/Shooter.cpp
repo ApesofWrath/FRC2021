@@ -23,41 +23,8 @@
         frontBeltNEO = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
         backBeltNEO = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
 
-        topWTalon->ConfigFactoryDefault();
-        topWTalon->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
-        topWTalon->SetInverted(false);
-        topWTalon->ConfigNominalOutputForward(0, 10); // probably dont need, nominal means ideal/normal? 
-        topWTalon->ConfigNominalOutputReverse(0, 10);
-        topWTalon->ConfigPeakOutputForward(1, 10);
-        topWTalon->ConfigPeakOutputReverse(-1, 10);
-        // motion magic
-        topWTalon->SelectProfileSlot(0,0);
-        topWTalon->Config_kF(0, 0, 0); // obv need to be tuned 
-        topWTalon->Config_kP(0, 0, 0);
-        topWTalon->Config_kI(0, 0, 0);
-        topWTalon->Config_kD(0, 0, 0);
-        topWTalon->ConfigMotionCruiseVelocity(0, 10);
-        topWTalon->ConfigMotionAcceleration(0, 10);
-
-        topWTalon->SetSelectedSensorPosition(0, 0, 10); //Manually sets the position back to zero
-
-        bottomWTalon->ConfigFactoryDefault();
-        bottomWTalon->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
-        bottomWTalon->SetInverted(false);
-        bottomWTalon->ConfigNominalOutputForward(0, 10); 
-        bottomWTalon->ConfigNominalOutputReverse(0, 10);
-        bottomWTalon->ConfigPeakOutputForward(1, 10);
-        bottomWTalon->ConfigPeakOutputReverse(-1, 10);
-        // motion magic
-        bottomWTalon->SelectProfileSlot(0,0);
-        bottomWTalon->Config_kF(0, 0, 0); 
-        bottomWTalon->Config_kP(0, 0, 0);
-        bottomWTalon->Config_kI(0, 0, 0);
-        bottomWTalon->Config_kD(0, 0, 0);
-        bottomWTalon->ConfigMotionCruiseVelocity(0, 10);
-        bottomWTalon->ConfigMotionAcceleration(0, 10);
-
-        bottomWTalon->SetSelectedSensorPosition(0, 0, 10); //Manually sets the position back to zero
+        ConfigureTalon(topWTalon, 0, 0, 10, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        ConfigureTalon(bottomWTalon, 0, 0, 10, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         frontBeltPID = new rev::CANPIDController(frontBeltNEO->GetPIDController());
         backBeltPID = new rev::CANPIDController(backBeltNEO->GetPIDController());
@@ -65,25 +32,8 @@
         frontBeltEncoder = new rev::CANEncoder(frontBeltNEO->GetEncoder());
         backBeltEncoder = new rev::CANEncoder(backBeltNEO->GetEncoder());
 
-        frontBeltPID->SetP(beltkP);
-        frontBeltPID->SetI(beltkI);
-        frontBeltPID->SetD(beltkD);
-        frontBeltPID->SetIZone(beltkIz);
-        frontBeltPID->SetFF(beltkFF);
-        frontBeltPID->SetOutputRange(beltkMinOutput, beltkMaxOutput);
-
-        backBeltPID->SetP(beltkP);
-        backBeltPID->SetI(beltkI);
-        backBeltPID->SetD(beltkD);
-        backBeltPID->SetIZone(beltkIz);
-        backBeltPID->SetFF(beltkFF);
-        backBeltPID->SetOutputRange(beltkMinOutput, beltkMaxOutput);
-        
-        frontBeltNEO->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-        backBeltNEO->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-
-        frontBeltNEO->BurnFlash();
-        backBeltNEO->BurnFlash();
+        ConfigureSpark(frontBeltNEO, frontBeltPID, beltkP, beltkI, beltkD, beltkIz, beltkFF, beltkMinOutput, beltkMaxOutput, rev::CANSparkMax::IdleMode::kBrake);
+        ConfigureSpark(backBeltNEO, backBeltPID, beltkP, beltkI, beltkD, beltkIz, beltkFF, beltkMinOutput, beltkMaxOutput, rev::CANSparkMax::IdleMode::kBrake);
 
     }
 
@@ -183,4 +133,42 @@
         // beltNEO->Set(-0.2);
         // topWNEO->Set(0);
         // botWNEO->Set(0);
+    }
+
+    void Shooter::ConfigureSpark(rev::CANSparkMax *spark, rev::CANPIDController *PIDController, 
+        double kP, double kI, double kD, double kIz, double kFF, double minOut, 
+        double maxOut, rev::CANSparkMax::IdleMode idleMode)
+    {
+        PIDController->SetP(kP);
+        PIDController->SetI(kI);
+        PIDController->SetD(kD);
+        PIDController->SetIZone(kIz);
+        PIDController->SetFF(kFF);
+        PIDController->SetOutputRange(minOut, maxOut);
+
+        spark->SetIdleMode(idleMode);
+
+        spark->BurnFlash();
+    }
+
+    void Shooter::ConfigureTalon(WPI_TalonFX *talon, int pidSlot, int pidType, int timeoutMs, bool inverted, 
+        int nominalForward, int nominalReverse, int peakForward, int peakReverse, int profileSlot, 
+        int kF, int kP, int kI, int kD, int cruiseVelocity, int acceleration)
+    {
+        talon->ConfigFactoryDefault();
+        talon->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, pidType);\
+        talon->SetInverted(inverted);
+        talon->ConfigNominalOutputForward(nominalForward, timeoutMs);
+        talon->ConfigNominalOutputReverse(nominalReverse, timeoutMs);
+        talon->ConfigPeakOutputForward(peakForward, timeoutMs);
+        talon->ConfigPeakOutputReverse(peakReverse, timeoutMs);
+        talon->SelectProfileSlot(pidSlot, pidType);
+        talon->Config_kF(pidSlot, kF, timeoutMs);
+        talon->Config_kP(pidSlot, kP, timeoutMs);
+        talon->Config_kI(pidSlot, kI, timeoutMs);
+        talon->Config_kD(pidSlot, kD, timeoutMs);
+        talon->ConfigMotionCruiseVelocity(cruiseVelocity);
+        talon->ConfigMotionAcceleration(acceleration);
+
+        talon->SetSelectedSensorPosition(0, pidType, timeoutMs);
     }
