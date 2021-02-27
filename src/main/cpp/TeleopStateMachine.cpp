@@ -51,7 +51,7 @@ void TeleopStateMachine::ProcessButtonData(ButtonData data) {
         state = SHOOT_STATE;
     }
     if (data.shooter_reverse_button) {
-      // state = SHOOTER_REVERSE_STATE;
+      state = SHOOTER_REVERSE_STATE;
     }
     if (data.shooter_intake_button) {
       state = INTAKE_SHOOTER_STATE;
@@ -173,11 +173,11 @@ void TeleopStateMachine::StateMachine(ButtonData data) {
         break;
 
         case SHOOTER_REVERSE_STATE:
-          // arm->intake_arm_state = arm->UP_STATE;
-          // intake->intake_state = intake->STOP_STATE;
-          // control_panel->state = control_panel->IDLE;
-          // shooter->shooter_state = shooter->REVERSE_STATE;
-          // last_state = SHOOTER_REVERSE_STATE;
+          arm->intake_arm_state = arm->UP_STATE;
+          intake->intake_state = intake->STOP_STATE;
+          control_panel->state = control_panel->IDLE;
+          shooter->shooter_state = shooter->REVERSE_STATE;
+          last_state = SHOOTER_REVERSE_STATE;
         break;
 
         case HUMAN_LOAD_STATE:
