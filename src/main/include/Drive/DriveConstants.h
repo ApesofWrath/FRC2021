@@ -1,12 +1,16 @@
 #pragma once
 
 #include "Constants.h"
+#include <units/units.h>
 
 #define PRACTICE 0 //0 uses the consts on the bottom //comp gains work ok on practice bot too
 
 #define PI 3.1415926535897932
 
+// #define SWERVE_DRIVE
 
+
+#ifndef SWERVE_DRIVE
 #if PRACTICE //bot still w/o superstructure
 
 //Teleop
@@ -131,8 +135,44 @@ constexpr auto K_MAX_ACCEL = 10.77;
 
 #endif //both bots
 
-const double WHEEL_DIAMETER = 6.0; //inches, for fps for auton
-const double TICKS_PER_ROT = 2048 * (84/8);//1365.0; //about 3 encoder rotations for each actual rotation // 4096 ticks per rotation for mag encoders
-const double TICKS_PER_FOOT = 1315.0; //auton
-const double MINUTE_CONVERSION = 600.0; //part of the conversion from ticks velocity to rpm
+// const double WHEEL_DIAMETER = 6.0; //inches, for fps for auton
+// const double TICKS_PER_ROT = 2048 * ();//1365.0; //about 3 encoder rotations for each actual rotation // 4096 ticks per rotation for mag encoders
+// const double TICKS_PER_FOOT = 1315.0; //auton
+// const double MINUTE_CONVERSION = 600.0; //part of the conversion from ticks velocity to rpm
 
+const double TICKS_PER_ROTATION_FALCON = 2048;
+const double SWERVE_MOD_ROTATE_RATIO = 13.64;
+const double SWERVE_MOD_DRIVE_RATIO = 7.39;
+const double WHEEL_RADIUS = 0.0762;
+const double METERS_PER_WHEEL_ROTATION = WHEEL_RADIUS * 2 * PI;
+const double ANGLE_TO_TICKS_SWERVE_YAW = (TICKS_PER_ROTATION_FALCON * SWERVE_MOD_ROTATE_RATIO) / (2 * PI);
+const double FALCON_MS_PER_UPDATE = 100.0;
+const double MS_PER_SECOND = 1000.0;
+
+const double FALCON_UPDATE_PER_SECOND = FALCON_MS_PER_UPDATE / MS_PER_SECOND;
+
+
+struct PIDSettings {
+    double kP = 0, kD = 0, kI = 0;
+};
+
+struct SwerveDrivePIDConfig {
+    PIDSettings kFrontLeftDrive, kFrontLeftYaw;
+    PIDSettings kFrontRightDrive, kFrontRightYaw;
+    PIDSettings kBackLeftDrive, kBackLeftYaw;
+    PIDSettings kBackRightDrive, kBackRightYaw;
+};  
+
+
+const SwerveDrivePIDConfig SWERVE_CONFIG_PID = {
+    {0.005, 0, 0}, {0.005, 0, 0.0}, // Front Left
+    {0.005, 0, 0}, {0.005, 0, 0.0}, // Front Right
+    {0.005, 0, 0}, {0.005, 0, 0.0}, // Back Left
+    {0.005, 0, 0}, {0.005, 0, 0.0}  // Back Right
+};
+
+
+#else // Swerve Drive
+
+
+#endif
