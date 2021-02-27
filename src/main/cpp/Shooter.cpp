@@ -23,8 +23,8 @@
         frontBeltNEO = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
         backBeltNEO = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
 
-        ConfigureTalon(topWTalon, 0, 0, 10, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        ConfigureTalon(bottomWTalon, 0, 0, 10, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        ConfigureTalon(topWTalon,       0, 0, 10, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        ConfigureTalon(bottomWTalon,    0, 0, 10, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         frontBeltPID = new rev::CANPIDController(frontBeltNEO->GetPIDController());
         backBeltPID = new rev::CANPIDController(backBeltNEO->GetPIDController());
@@ -32,8 +32,8 @@
         frontBeltEncoder = new rev::CANEncoder(frontBeltNEO->GetEncoder());
         backBeltEncoder = new rev::CANEncoder(backBeltNEO->GetEncoder());
 
-        ConfigureSpark(frontBeltNEO, frontBeltPID, beltkP, beltkI, beltkD, beltkIz, beltkFF, beltkMinOutput, beltkMaxOutput, rev::CANSparkMax::IdleMode::kBrake);
-        ConfigureSpark(backBeltNEO, backBeltPID, beltkP, beltkI, beltkD, beltkIz, beltkFF, beltkMinOutput, beltkMaxOutput, rev::CANSparkMax::IdleMode::kBrake);
+        ConfigureSpark(frontBeltNEO, frontBeltPID,  beltkP, beltkI, beltkD, beltkIz, beltkFF, beltkMinOutput, beltkMaxOutput, rev::CANSparkMax::IdleMode::kBrake);
+        ConfigureSpark(backBeltNEO, backBeltPID,    beltkP, beltkI, beltkD, beltkIz, beltkFF, beltkMinOutput, beltkMaxOutput, rev::CANSparkMax::IdleMode::kBrake);
 
     }
 
@@ -77,12 +77,7 @@
     }
 
     void Shooter::Shoot(){
-        // beltNEO->Set(1);
-        // topWNEO->Set(0.5);
-        // botWNEO->Set(1);
-        // topWPID->SetReference(topShootSpeed, rev::ControlType::kVelocity); //5676 is max free spin rpm
-        // botWPID->SetReference(bottomShootSpeed, rev::ControlType::kVelocity);
-
+        
         indexerTalon->Set(ControlMode::PercentOutput, 1.0);
         topWTalon->Set(ControlMode::MotionMagic, topWTalon->GetSelectedSensorPosition(0) + 668); // need to config, when get testing equip finalize method of moving wheels
         bottomWTalon->Set(ControlMode::MotionMagic, bottomWTalon->GetSelectedSensorPosition(0) + 668); // need to config, when get testing equip finalize method of moving wheels
@@ -92,10 +87,6 @@
     }
 
     void Shooter::Intake(){                
-        // beltPOS = beltEncoder->GetPosition();
-        // beltPID->SetReference(beltPOS + 10, rev::ControlType::kPosition);
-        // topWNEO->Set(0);
-        // botWNEO->Set(0);
         indexerTalon->Set(ControlMode::PercentOutput, 1.0);
         topWTalon->Set(ControlMode::PercentOutput, 0.0);
         bottomWTalon->Set(ControlMode::PercentOutput, 0.0);
@@ -105,9 +96,7 @@
     }
 
     void Shooter::Stop(){
-        // beltNEO->Set(0);
-        // topWNEO->Set(0);
-        // botWNEO->Set(0);
+
         indexerTalon->Set(ControlMode::PercentOutput, 0.0);
         topWTalon->Set(ControlMode::PercentOutput, 0.0);
         bottomWTalon->Set(ControlMode::PercentOutput, 0.0);
@@ -116,9 +105,7 @@
     }
 
     void Shooter::Waiting(){ // slower than shooting
-        // beltNEO->Set(0);
-        // topWNEO->Set(0);
-        // botWNEO->Set(0);
+
 
         indexerTalon->Set(ControlMode::PercentOutput, 0.1);
         topWTalon->Set(ControlMode::PercentOutput, 0.0);
@@ -130,9 +117,7 @@
     }
 
     void Shooter::Reverse() {  //not needed i hope
-        // beltNEO->Set(-0.2);
-        // topWNEO->Set(0);
-        // botWNEO->Set(0);
+        
     }
 
     void Shooter::ConfigureSpark(rev::CANSparkMax *spark, rev::CANPIDController *PIDController, 
