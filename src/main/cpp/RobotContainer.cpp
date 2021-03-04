@@ -101,7 +101,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
             return new frc2::SequentialCommandGroup(
                 std::move(*ramseteCommand),
                 frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
-                frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->SHOOT_STATE;}),
+                frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->FAR_SHOOT_STATE;}),
                 frc2::WaitCommand(1.5_s),
                 frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->STOP_STATE;})
             );
@@ -181,7 +181,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 }),
                 std::move(*ramseteCommand2),
                 frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
-                frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->SHOOT_STATE;}),
+                frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->FAR_SHOOT_STATE;}),
                 frc2::WaitCommand(1.5_s),
                 frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->STOP_STATE;})
             );  

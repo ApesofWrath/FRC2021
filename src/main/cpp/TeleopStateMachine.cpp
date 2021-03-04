@@ -132,7 +132,7 @@ void TeleopStateMachine::StateMachine(ButtonData data) {
         break;
 
         case SHOOT_STATE:
-          shooter->shooter_state = shooter->SHOOT_STATE;
+          shooter->shooter_state = shooter->FAR_SHOOT_STATE;
           arm->intake_arm_state = arm->UP_STATE;
           control_panel->state = control_panel->IDLE;
           intake->intake_state = intake->STOP_STATE;

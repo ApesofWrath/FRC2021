@@ -13,8 +13,8 @@
         topWTalon = new WPI_TalonFX(topWTalonID);
         bottomWTalon = new WPI_TalonFX(bottomWTalonID);
 
-        ConfigureTalon(topWTalon,       0, 0, 10, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NeutralMode::Brake);
-        ConfigureTalon(bottomWTalon,    0, 0, 10, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NeutralMode::Brake);
+        ConfigureTalon(topWTalon,       0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
+        ConfigureTalon(bottomWTalon,    0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
 
         beltPID = new rev::CANPIDController(beltSpark->GetPIDController());
         beltEncoder = new rev::CANEncoder(beltSpark->GetEncoder());
@@ -52,10 +52,22 @@
                 last_shooter_state = STOP_STATE;
                 break;
                 
-                case SHOOT_STATE:
-                frc::SmartDashboard::PutString("Shooter ", "shoot");
-                Shoot();
-                last_shooter_state = SHOOT_STATE;
+                case FAR_SHOOT_STATE:
+                frc::SmartDashboard::PutString("Shooter ", "far shoot");
+                FarShoot();
+                last_shooter_state = FAR_SHOOT_STATE;
+                break;
+
+                case MEDIUM_SHOOT_STATE:
+                frc::SmartDashboard::PutString("Shooter ", "medium shoot");
+                MediumShoot();
+                last_shooter_state = MEDIUM_SHOOT_STATE;
+                break;
+                
+                case CLOSE_SHOOT_STATE:
+                frc::SmartDashboard::PutString("Shooter ", "close shoot");
+                CloseShoot();
+                last_shooter_state = CLOSE_SHOOT_STATE;
                 break;
 
                 case WAITING_STATE: 
@@ -77,11 +89,29 @@
         
     }
 
-    void Shooter::Shoot(){
+    void Shooter::FarShoot(){
         
         rightIndexerPID->SetReference(indexerShootSpeed, rev::ControlType::kVelocity);
-        topWTalon->Set(ControlMode::MotionMagic, topWTalon->GetSelectedSensorPosition(0) + 668); // need to config, when get testing equip finalize method of moving wheels
-        bottomWTalon->Set(ControlMode::MotionMagic, bottomWTalon->GetSelectedSensorPosition(0) + 668); // need to config, when get testing equip finalize method of moving wheels
+        topWTalon->Set(ControlMode::Velocity, topShootSpeed * farModifier); // need to config, when get testing equip finalize method of moving wheels
+        bottomWTalon->Set(ControlMode::Velocity, bottomShootSpeed * farModifier); // need to config, when get testing equip finalize method of moving wheels
+        beltPID->SetReference(beltSpeed, rev::ControlType::kVelocity); // look into smart velocity
+   
+    }
+
+    void Shooter::MediumShoot(){
+        
+        rightIndexerPID->SetReference(indexerShootSpeed, rev::ControlType::kVelocity);
+        topWTalon->Set(ControlMode::Velocity, topShootSpeed * mediumModifier); // need to config, when get testing equip finalize method of moving wheels
+        bottomWTalon->Set(ControlMode::Velocity, bottomShootSpeed * mediumModifier); // need to config, when get testing equip finalize method of moving wheels
+        beltPID->SetReference(beltSpeed, rev::ControlType::kVelocity); // look into smart velocity
+   
+    }
+
+    void Shooter::CloseShoot(){
+        
+        rightIndexerPID->SetReference(indexerShootSpeed, rev::ControlType::kVelocity);
+        topWTalon->Set(ControlMode::Velocity, topShootSpeed * closeModifier); // need to config, when get testing equip finalize method of moving wheels
+        bottomWTalon->Set(ControlMode::Velocity, bottomShootSpeed * closeModifier); // need to config, when get testing equip finalize method of moving wheels
         beltPID->SetReference(beltSpeed, rev::ControlType::kVelocity); // look into smart velocity
    
     }
@@ -134,24 +164,15 @@
         spark->BurnFlash();
     }
 
-    void Shooter::ConfigureTalon(WPI_TalonFX *talon, int pidSlot, int pidType, int timeoutMs, bool inverted, 
-        int nominalForward, int nominalReverse, int peakForward, int peakReverse, int profileSlot, 
-        int kF, int kP, int kI, int kD, int cruiseVelocity, int acceleration, NeutralMode brakeMode)
+    void Shooter::ConfigureTalon(WPI_TalonFX *talon, int pidSlot, int pidType, int timeoutMs, bool inverted,  
+        int kF, int kP, int kI, int kD, NeutralMode brakeMode)
     {
         talon->ConfigFactoryDefault();
-        talon->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, pidType);\
         talon->SetInverted(inverted);
-        talon->ConfigNominalOutputForward(nominalForward, timeoutMs);
-        talon->ConfigNominalOutputReverse(nominalReverse, timeoutMs);
-        talon->ConfigPeakOutputForward(peakForward, timeoutMs);
-        talon->ConfigPeakOutputReverse(peakReverse, timeoutMs);
-        talon->SelectProfileSlot(pidSlot, pidType);
         talon->Config_kF(pidSlot, kF, timeoutMs);
         talon->Config_kP(pidSlot, kP, timeoutMs);
         talon->Config_kI(pidSlot, kI, timeoutMs);
         talon->Config_kD(pidSlot, kD, timeoutMs);
-        talon->ConfigMotionCruiseVelocity(cruiseVelocity);
-        talon->ConfigMotionAcceleration(acceleration);
         talon->SetNeutralMode(brakeMode);
 
         talon->SetSelectedSensorPosition(0, pidType, timeoutMs);
