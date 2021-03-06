@@ -17,28 +17,28 @@ class Shooter {
 
     // const int topRollerSpark = 2;
     // const int bottomRollerSpark = 3;
-    double shootkP = 10.8, shootkI = 0, shootkD = 0.0, shootkIz = 0, shootkFF = 0, shootkMaxOutput = 0.3, shootkMinOutput = -0.3; // Not tuned yet
-    double beltkP = 10.8, beltkI = 0, beltkD = 0.0, beltkIz = 0, beltkFF = 0, beltkMaxOutput = 0.3, beltkMinOutput = -0.3;
-    double indexerkP = 10.8, indexerkI = 0, indexerkD = 0.0, indexerkIz = 0, indexerkFF = 0, indexerkMaxOutput = 0.3, indexerkMinOutput = -0.3;
+    double k_P_shooter = 10.8, k_I_shooter = 0, k_D_shooter = 0.0, k_Iz_shooter = 0, k_FF_shooter = 0; // Not tuned yet
+    double k_P_belt = 10.8, k_I_belt = 0, k_D_belt = 0.0, k_Iz_belt = 0, k_FF_belt = 0, k_max_out_belt = 0, k_min_out_belt = 0;
+    double k_P_indexer = 10.8, k_I_indexer = 0, k_D_indexer = 0.0, k_Iz_indexer = 0, k_FF_indexer = 0, k_max_out_indexer = 0, k_min_out_indexer = 0;
 
     
-    const double msPerFalconUpdate = 100.0;
-    const double msPerSecond = 1000.0;
+    const double ms_per_falcon_updates = 100.0;
+    const double ms_per_second = 1000.0;
 
-    const double falconUpdatePerSecond = msPerFalconUpdate / msPerSecond;
+    const double faclcon_updates_per_second = ms_per_falcon_updates / ms_per_second;
 
-    const int ticksPerRot = 2048;
-    const double ticksToRad = (2 * apes::PI) / ticksPerRot;
-    const double radsToTicks = (1024 / apes::PI);
+    const int ticks_per_rotation = 2048;
+    const double ticks_to_radians = (2 * apes::PI) / ticks_per_rotation;
+    const double radians_to_ticks = (1024 / apes::PI);
 
-    const int beltSpeed = 668;
-    const double topShootSpeed = SHOOTER_SPEED * radsToTicks * 2;
-    const double bottomShootSpeed = SHOOTER_SPEED * radsToTicks * 1;
-    const double indexerShootSpeed = 668.0f;
+    const int belt_speed = 668;
+    const double top_shoot_speed = SHOOTER_SPEED * radians_to_ticks * 2;
+    const double bottom_shoot_speed = SHOOTER_SPEED * radians_to_ticks * 1;
+    const double indexer_shoot_speed = 668.0f;
 
-    const double farModifier = 1;
-    const double mediumModifier = 1;
-    const double closeModifier = 1;
+    const double far_modifier = 1;
+    const double medium_modifier = 1;
+    const double close_modifier = 1;
 
     enum ShooterState {
         INIT_STATE, INTAKE_STATE, STOP_STATE, 
@@ -51,21 +51,21 @@ class Shooter {
 
     double belt_position;
 
-    const int beltSparkID = 668;
-    const int rightindexerSparkID = 668;
-    const int leftindexerSparkID = 668;
+    const int belt_spark_ID = 668;
+    const int right_indexer_spark_ID = 668;
+    const int left_indexer_spark_ID = 668;
 
-    const int topWTalonID = 668;
-    const int bottomWTalonID = 668;
+    const int top_wheel_talon_ID = 668;
+    const int bottom_wheel_talon_ID = 668;
 
-    rev::CANSparkMax *beltSpark, *leftIndexerSpark, *rightIndexerSpark;
-    rev::CANPIDController *beltPID, *leftIndexerPID, *rightIndexerPID;
-    rev::CANEncoder *beltEncoder, *leftIndexerEncoder, *rightIndexerEncoder;
+    rev::CANSparkMax *belt_spark, *left_indexer_spark, *right_indexer_spark;
+    rev::CANPIDController *belt_PID, *left_indexer_PID, *right_indexer_PID;
+    rev::CANEncoder *belt_encoder, *left_indexer_encoder, *right_indexer_encoder;
 
     frc::Joystick* joy;
 
-    WPI_TalonFX* topWTalon;
-    WPI_TalonFX* bottomWTalon;
+    WPI_TalonFX* top_wheel_talon;
+    WPI_TalonFX* bottom_wheel_talon;
 
     Shooter();
     void Init();

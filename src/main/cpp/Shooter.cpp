@@ -5,30 +5,34 @@
     Shooter::Shooter() {
         shooter_state = INIT_STATE;
 
-        rightIndexerSpark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
-        leftIndexerSpark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
+        right_indexer_spark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
+        left_indexer_spark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
 
-        beltSpark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
+        belt_spark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
 
-        topWTalon = new WPI_TalonFX(topWTalonID);
-        bottomWTalon = new WPI_TalonFX(bottomWTalonID);
+        top_wheel_talon = new WPI_TalonFX(top_wheel_talon_ID);
+        bottom_wheel_talon = new WPI_TalonFX(bottom_wheel_talon_ID);
 
-        ConfigureTalon(topWTalon,       0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
-        ConfigureTalon(bottomWTalon,    0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
+        ConfigureTalon(top_wheel_talon,       0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
+        ConfigureTalon(bottom_wheel_talon,    0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
 
-        beltPID = new rev::CANPIDController(beltSpark->GetPIDController());
-        beltEncoder = new rev::CANEncoder(beltSpark->GetEncoder());
+        belt_PID = new rev::CANPIDController(belt_spark->GetPIDController());
+        belt_encoder = new rev::CANEncoder(belt_spark->GetEncoder());
         
-        rightIndexerPID = new rev::CANPIDController(rightIndexerSpark->GetPIDController());
-        rightIndexerEncoder = new rev::CANEncoder(rightIndexerSpark->GetEncoder());
+        right_indexer_PID = new rev::CANPIDController(right_indexer_spark->GetPIDController());
+        right_indexer_encoder = new rev::CANEncoder(right_indexer_spark->GetEncoder());
 
-        leftIndexerPID = new rev::CANPIDController(leftIndexerSpark->GetPIDController());
-        leftIndexerEncoder = new rev::CANEncoder(leftIndexerSpark->GetEncoder());
+        left_indexer_PID = new rev::CANPIDController(left_indexer_spark->GetPIDController());
+        left_indexer_encoder = new rev::CANEncoder(left_indexer_spark->GetEncoder());
 
-        ConfigureSpark(beltSpark, beltPID,  beltkP, beltkI, beltkD, beltkIz, beltkFF, beltkMinOutput, beltkMaxOutput, rev::CANSparkMax::IdleMode::kBrake);
-        ConfigureSpark(leftIndexerSpark, leftIndexerPID,    indexerkP, indexerkI, indexerkD, indexerkIz, indexerkFF, indexerkMaxOutput, indexerkMinOutput, rev::CANSparkMax::IdleMode::kBrake);
-        ConfigureSpark(rightIndexerSpark, rightIndexerPID,  indexerkP, indexerkI, indexerkD, indexerkIz, indexerkFF, indexerkMinOutput, indexerkMaxOutput, rev::CANSparkMax::IdleMode::kBrake);
-        leftIndexerSpark->Follow(*rightIndexerSpark, true);
+        ConfigureSpark(belt_spark, belt_PID,
+            k_P_belt, k_I_belt, k_D_belt, k_Iz_belt, k_FF_belt, k_min_out_belt, k_max_out_belt, rev::CANSparkMax::IdleMode::kBrake);
+        ConfigureSpark(left_indexer_spark, left_indexer_PID,
+            k_P_indexer, k_I_indexer, k_D_indexer, k_Iz_indexer, k_FF_indexer, k_max_out_indexer, k_min_out_indexer, rev::CANSparkMax::IdleMode::kBrake);
+        ConfigureSpark(right_indexer_spark, right_indexer_PID,
+            k_P_indexer, k_I_indexer, k_D_indexer, k_Iz_indexer, k_FF_indexer, k_max_out_indexer, k_min_out_indexer, rev::CANSparkMax::IdleMode::kBrake);
+        
+        left_indexer_spark->Follow(*right_indexer_spark, true);
     }
 
     void Shooter::ShooterStateMachine(){
@@ -85,73 +89,64 @@
 
     }
 
-    void Shooter::Init(){
+    void Shooter::Init() {
         
     }
 
-    void Shooter::FarShoot(){
-        
-        rightIndexerPID->SetReference(indexerShootSpeed, rev::ControlType::kVelocity);
-        topWTalon->Set(ControlMode::Velocity, topShootSpeed * farModifier); // need to config, when get testing equip finalize method of moving wheels
-        bottomWTalon->Set(ControlMode::Velocity, bottomShootSpeed * farModifier); // need to config, when get testing equip finalize method of moving wheels
-        beltPID->SetReference(beltSpeed, rev::ControlType::kVelocity); // look into smart velocity
+    void Shooter::FarShoot() {
+        top_wheel_talon->Set(ControlMode::Velocity, top_shoot_speed * far_modifier);
+        bottom_wheel_talon->Set(ControlMode::Velocity, bottom_shoot_speed * far_modifier); 
+        belt_PID->SetReference(belt_speed, rev::ControlType::kVelocity); 
+        right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
+    }
+
+    void Shooter::MediumShoot() {
+        top_wheel_talon->Set(ControlMode::Velocity, top_shoot_speed * medium_modifier); // need to config, when get testing equip 
+        bottom_wheel_talon->Set(ControlMode::Velocity, bottom_shoot_speed * medium_modifier); 
+        belt_PID->SetReference(belt_speed, rev::ControlType::kVelocity); 
+        right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
+    }
+
+    void Shooter::CloseShoot() {
+        right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
+        top_wheel_talon->Set(ControlMode::Velocity, top_shoot_speed * close_modifier);
+        bottom_wheel_talon->Set(ControlMode::Velocity, bottom_shoot_speed * close_modifier);
+        belt_PID->SetReference(belt_speed, rev::ControlType::kVelocity); 
    
     }
 
-    void Shooter::MediumShoot(){
-        
-        rightIndexerPID->SetReference(indexerShootSpeed, rev::ControlType::kVelocity);
-        topWTalon->Set(ControlMode::Velocity, topShootSpeed * mediumModifier); // need to config, when get testing equip finalize method of moving wheels
-        bottomWTalon->Set(ControlMode::Velocity, bottomShootSpeed * mediumModifier); // need to config, when get testing equip finalize method of moving wheels
-        beltPID->SetReference(beltSpeed, rev::ControlType::kVelocity); // look into smart velocity
-   
-    }
-
-    void Shooter::CloseShoot(){
-        
-        rightIndexerPID->SetReference(indexerShootSpeed, rev::ControlType::kVelocity);
-        topWTalon->Set(ControlMode::Velocity, topShootSpeed * closeModifier); // need to config, when get testing equip finalize method of moving wheels
-        bottomWTalon->Set(ControlMode::Velocity, bottomShootSpeed * closeModifier); // need to config, when get testing equip finalize method of moving wheels
-        beltPID->SetReference(beltSpeed, rev::ControlType::kVelocity); // look into smart velocity
-   
-    }
-
-    void Shooter::Intake(){                
-        rightIndexerPID->SetReference(indexerShootSpeed, rev::ControlType::kVelocity);
-        topWTalon->Set(ControlMode::PercentOutput, 0.0);
-        bottomWTalon->Set(ControlMode::PercentOutput, 0.0);
-        beltSpark->Set(0);
+    void Shooter::Intake() {                
+        right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
+        top_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        bottom_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        belt_spark->Set(0);
 
     }
 
-    void Shooter::Stop(){
- 
-        rightIndexerSpark->Set(0);
-        topWTalon->Set(ControlMode::PercentOutput, 0.0);
-        bottomWTalon->Set(ControlMode::PercentOutput, 0.0);
-        beltSpark->Set(0);
+    void Shooter::Stop() {
+        right_indexer_spark->Set(0);
+        top_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        bottom_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        belt_spark->Set(0);
     }
 
-    void Shooter::Waiting(){ 
-        rightIndexerSpark->Set(0.1);
-        topWTalon->Set(ControlMode::PercentOutput, 0.0);
-        topWTalon->SetSelectedSensorPosition(0, 0, 10); // zero after shooting
-        bottomWTalon->Set(ControlMode::PercentOutput, 0.0);
-        bottomWTalon->SetSelectedSensorPosition(0, 0, 10); // zero after shooting
-        beltSpark->Set(0);
+    void Shooter::Waiting() { 
+        right_indexer_spark->Set(0.1);
+        top_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        bottom_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        belt_spark->Set(0);
     }
 
     void Shooter::Reverse() {  
-        rightIndexerSpark->Set(-1.0);
-        topWTalon->Set(ControlMode::PercentOutput, -1.0);
-        bottomWTalon->Set(ControlMode::PercentOutput, -1.0);
-        beltSpark->Set(-1.0);
+        right_indexer_spark->Set(-1.0);
+        top_wheel_talon->Set(ControlMode::PercentOutput, -1.0);
+        bottom_wheel_talon->Set(ControlMode::PercentOutput, -1.0);
+        belt_spark->Set(-1.0);
     }
 
     void Shooter::ConfigureSpark(rev::CANSparkMax *spark, rev::CANPIDController *PIDController, 
         double kP, double kI, double kD, double kIz, double kFF, double minOut, 
-        double maxOut, rev::CANSparkMax::IdleMode idleMode)
-    {
+        double maxOut, rev::CANSparkMax::IdleMode idleMode) {
         PIDController->SetP(kP);
         PIDController->SetI(kI);
         PIDController->SetD(kD);
@@ -165,8 +160,7 @@
     }
 
     void Shooter::ConfigureTalon(WPI_TalonFX *talon, int pidSlot, int pidType, int timeoutMs, bool inverted,  
-        int kF, int kP, int kI, int kD, NeutralMode brakeMode)
-    {
+        int kF, int kP, int kI, int kD, NeutralMode brakeMode) {
         talon->ConfigFactoryDefault();
         talon->SetInverted(inverted);
         talon->Config_kF(pidSlot, kF, timeoutMs);
