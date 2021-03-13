@@ -3,6 +3,7 @@
 #include <string>
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/smartdashboard/SendableChooser.h>
 #include <ctre/Phoenix.h>
 #include <frc/Joystick.h>
 #include <rev/CANSparkMax.h>
@@ -11,6 +12,12 @@
 
 #define SHOOTER_SPEED 594.3893301
 #define MOTOR_ROTATION_PER_HALF_BELT_ROTATION 26.1799387799
+
+enum Distances{
+        CLOSE = 0,
+        MEDIUM = 1,
+        FAR = 2
+};
 
 class Shooter {
     public:
@@ -45,7 +52,9 @@ class Shooter {
         FAR_SHOOT_STATE, MEDIUM_SHOOT_STATE, CLOSE_SHOOT_STATE, 
         WAITING_STATE, REVERSE_STATE
     };
-   
+
+    frc::SendableChooser<Distances> distance_chooser;
+
     ShooterState last_shooter_state = INIT_STATE;
     ShooterState shooter_state = INIT_STATE;
 

@@ -23,7 +23,6 @@
 #include "Arm.h"
 #include "Intake.h"
 #include <cameraserver/CameraServer.h>
-#include "Shooter.h"
 
 
 #include "rev/ColorSensorV3.h"

@@ -36,7 +36,8 @@
     }
 
     void Shooter::ShooterStateMachine(){
-            
+        frc::SmartDashboard::PutData("Desired Shooting Distance", &distance_chooser);     
+        
             switch(shooter_state) {
                 case INIT_STATE:
                 frc::SmartDashboard::PutString("Shooter ", "init");
@@ -90,7 +91,10 @@
     }
 
     void Shooter::Init() {
-        
+        distance_chooser.SetDefaultOption("Close", CLOSE);
+        distance_chooser.AddOption("Close",   Distances::CLOSE);
+        distance_chooser.AddOption("Medium",  Distances::MEDIUM);
+        distance_chooser.AddOption("Far",     Distances::FAR);
     }
 
     void Shooter::FarShoot() {
