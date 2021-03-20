@@ -73,8 +73,8 @@ class Shooter {
 
     frc::Joystick* joy;
 
-    WPI_TalonFX* top_wheel_talon;
-    WPI_TalonFX* bottom_wheel_talon;
+    WPI_TalonFX *top_wheel_talon;
+    WPI_TalonFX *bottom_wheel_talon;
 
     Shooter();
     void Init();
