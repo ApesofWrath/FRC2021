@@ -1,12 +1,13 @@
 #include "Shooter.h"
 #include "ShooterSubsystem.h"
 
-ShooterSubsystem::ShooterSubsystem(){
-    
+ShooterSubsystem::ShooterSubsystem(Shooter *shooter){
+    m_shooter = shooter;
 }
 
 void ShooterSubsystem::ShootLow(){
-top_wheel_talon->Set(ControlMode::PercentOutput, 0.5);
+
+
 }
 
 void ShooterSubsystem::ShootMedium(){
@@ -14,5 +15,7 @@ void ShooterSubsystem::ShootMedium(){
 }
 
 void ShooterSubsystem::ShootHigh(){
+    m_shooter->top_wheel_talon->Set(ControlMode::PercentOutput, 0.5);
+        frc::SmartDashboard::PutString("COmmand", "WORKINBG");
 
 }

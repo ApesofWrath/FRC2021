@@ -131,7 +131,7 @@ void Robot::AutonomousPeriodic() {
   intake->IntakeStateMachine();
 }
 void Robot::TeleopInit() {
-  frc2::CommandScheduler::GetInstance().Disable();
+  // frc2::CommandScheduler::GetInstance().Disable();
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Cancel();
     m_autonomousCommand = nullptr;

@@ -7,12 +7,16 @@
 #include <frc2/command/InstantCommand.h>
 #include <frc2/command/WaitUntilCommand.h>
 #include <frc2/command/WaitCommand.h>
+#include <frc/Joystick.h>
+#include <frc2/command/button/JoystickButton.h>
+#include <frc/GenericHID.h>
 
 #include <frc2/command/PIDCommand.h>
 #include <frc/trajectory/constraint/DifferentialDriveVoltageConstraint.h>
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/trajectory/Trajectory.h>
 #include <frc2/command/RamseteCommand.h>
+#include <frc2/command/Command.h>
 
 #include "Drive/DriveBase.h"
 #include <frc/Filesystem.h>
@@ -24,6 +28,8 @@
 #include "Shooter.h"
 #include "Arm.h"
 #include "Intake.h"
+#include "ShooterSubsystem.h"
+#include "Commands/ShootHigh.h"
 
 const std::string kAutoNameDefault = "Default";
 const std::string kAutoNameCustom = "My Auto";
@@ -46,12 +52,14 @@ enum Auto {
  */
 class RobotContainer {
  public:
-  RobotContainer(AutonDrive* drive, Shooter* shooter, Arm* arm, Intake* intake) : m_drive(drive), m_shooter(shooter), m_intake(intake), m_arm(arm) {};
+  RobotContainer(AutonDrive* drive, Shooter* shooter, Arm* arm, Intake* intake);
 
   AutonDrive* m_drive;
   Shooter* m_shooter;
   Arm* m_arm;
   Intake* m_intake;
+  frc::Joystick* m_joystick;
+  ShooterSubsystem* m_shooter_subsystem;
 
   void InitAutoChoices();
 
@@ -59,6 +67,8 @@ class RobotContainer {
   frc::SendableChooser<Auto> m_chooser;
   
   Auto m_autoSelected;
+
+
  private:
   void ConfigureButtonBindings();
 

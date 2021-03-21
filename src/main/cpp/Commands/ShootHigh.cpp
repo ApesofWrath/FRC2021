@@ -1,4 +1,5 @@
 #include "Commands/ShootHigh.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 
     ShootHighCommand::ShootHighCommand(ShooterSubsystem *shooter){
         m_shooter = shooter;
@@ -9,6 +10,8 @@
     }
 
     void ShootHighCommand::Execute() {
+        m_shooter->ShootHigh();
+        frc::SmartDashboard::PutString("COmmand", "WORKINBG");
 
     }
     

@@ -7,6 +7,15 @@
 #include <iostream>
 #include <vector>
 
+RobotContainer::RobotContainer(AutonDrive* drive, Shooter* shooter, Arm* arm, Intake* intake) {
+    m_drive = drive;
+    m_shooter = shooter;
+    m_arm = arm;
+    m_intake = intake;
+    m_joystick;
+    m_shooter_subsystem = new ShooterSubsystem(m_shooter);
+    ConfigureButtonBindings();
+}
 
 const frc::DifferentialDriveKinematics K_DRIVE_KINEMATICS{
     units::meter_t(K_TRACK_WIDTH)};
@@ -191,6 +200,13 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
             return new frc2::InstantCommand([this] { frc::SmartDashboard::PutString("status","Why aren't you running auton??");});
         break;
     }
+}
+
+void RobotContainer::ConfigureButtonBindings() {
+    m_joystick = new frc::Joystick(2);
+    frc2::JoystickButton(m_joystick, 1)
+        .WhenPressed(new ShootHighCommand(m_shooter_subsystem));
+    // frc2::JoystickButton(&m_joystick, 1).WhenPressed(new ShootHigh())
 }
 /*
 
