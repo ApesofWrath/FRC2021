@@ -2,6 +2,7 @@
 
 #include <string>
 #include <frc/smartdashboard/SendableChooser.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc/commands/Command.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/InstantCommand.h>
@@ -29,6 +30,8 @@
 #include "Arm.h"
 #include "Intake.h"
 #include "ShooterSubsystem.h"
+
+#include "Commands/ShootLow.h"
 #include "Commands/ShootHigh.h"
 
 const std::string kAutoNameDefault = "Default";

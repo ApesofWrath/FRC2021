@@ -3,13 +3,12 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/Command.h>
 #include <frc2/command/CommandHelper.h>
-#include <frc/Joystick.h>
 
 #include "ShooterSubsystem.h"
 
-class ShootHighCommand : public frc2::CommandHelper<frc2::CommandBase, ShootHighCommand> {
+class ShootLowCommand : public frc2::CommandHelper<frc2::CommandBase, ShootLowCommand> {
     public: 
-    explicit ShootHighCommand(ShooterSubsystem *shooter, frc::Joystick *joyOp);
+    explicit ShootLowCommand(ShooterSubsystem *shooter, frc::Joystick *joyOp);
     
     void Initialize() override;
 
@@ -19,9 +18,9 @@ class ShootHighCommand : public frc2::CommandHelper<frc2::CommandBase, ShootHigh
 
     bool IsFinished() override;
      
-    ~ShootHighCommand() override; // delete me?
+    ~ShootLowCommand() override; // delete me?
     int m_counter = 0;
-    // bool ShootHigh();
+
     private: 
     ShooterSubsystem *m_shooter;
     frc::Joystick *m_joystick;

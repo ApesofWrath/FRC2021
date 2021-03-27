@@ -11,6 +11,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     
     ShooterSubsystem(Shooter *shooter);
 
+    void Periodic() override;
+
     void ShootLow();
     void ShootMedium();
     void ShootHigh();
