@@ -64,18 +64,14 @@ class Shooter {
     const int right_indexer_spark_ID = 668;
     const int left_indexer_spark_ID = 668;
 
-    const int top_wheel_talon_ID = 668;
-    const int bottom_wheel_talon_ID = 668;
+    const int top_wheel_spark_ID = 668;
+    const int bottom_wheel_spark_ID = 668;
 
-    rev::CANSparkMax *belt_spark, *left_indexer_spark, *right_indexer_spark;
-    rev::CANPIDController *belt_PID, *left_indexer_PID, *right_indexer_PID;
-    rev::CANEncoder *belt_encoder, *left_indexer_encoder, *right_indexer_encoder;
+    rev::CANSparkMax *belt_spark, *left_indexer_spark, *right_indexer_spark, *top_wheel_spark, *bottom_wheel_spark;
+    rev::CANPIDController *belt_PID, *left_indexer_PID, *right_indexer_PID, *top_wheel_PID, *bottom_wheel_PID;
+    rev::CANEncoder *belt_encoder, *left_indexer_encoder, *right_indexer_encoder, *top_wheel_encoder, *bottom_wheel_encoder;
 
     frc::Joystick* joy;
-
-    WPI_TalonFX *top_wheel_talon;
-    WPI_TalonFX *bottom_wheel_talon;
-
     Shooter();
     void Init();
     void FarShoot();

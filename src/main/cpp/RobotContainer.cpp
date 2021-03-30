@@ -29,7 +29,8 @@ RobotContainer::RobotContainer(AutonDrive* drive, Shooter* shooter, Arm* arm, In
 }
 
 const frc::DifferentialDriveKinematics K_DRIVE_KINEMATICS{
-    units::meter_t(K_TRACK_WIDTH)};
+        units::meter_t(K_TRACK_WIDTH)
+    };
 
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

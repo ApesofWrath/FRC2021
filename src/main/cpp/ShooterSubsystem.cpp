@@ -20,7 +20,7 @@ void ShooterSubsystem::ShootMedium(){
 
 
 void ShooterSubsystem::ShootHigh(){
-    m_shooter->top_wheel_talon->Set(ControlMode::PercentOutput, 0.5);
+    // m_shooter->top_wheel_talon->Set(ControlMode::PercentOutput, 0.5);
     frc::SmartDashboard::PutString("COmmand", "WORKINBG");
 
 }

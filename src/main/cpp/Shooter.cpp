@@ -10,11 +10,11 @@
 
         belt_spark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
 
-        top_wheel_talon = new WPI_TalonFX(top_wheel_talon_ID);
-        bottom_wheel_talon = new WPI_TalonFX(bottom_wheel_talon_ID);
+        top_wheel_spark = new rev::CANSparkMax(29, rev::CANSparkMax::MotorType::kBrushless);
+        bottom_wheel_spark = new rev::CANSparkMax(28, rev::CANSparkMax::MotorType::kBrushless);
 
-        ConfigureTalon(top_wheel_talon,       0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
-        ConfigureTalon(bottom_wheel_talon,    0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
+        // ConfigureTalon(top_wheel_spark,       0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
+        // ConfigureTalon(bottom_wheel_spark,    0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
 
         belt_PID = new rev::CANPIDController(belt_spark->GetPIDController());
         belt_encoder = new rev::CANEncoder(belt_spark->GetEncoder());
@@ -24,6 +24,13 @@
 
         left_indexer_PID = new rev::CANPIDController(left_indexer_spark->GetPIDController());
         left_indexer_encoder = new rev::CANEncoder(left_indexer_spark->GetEncoder());
+
+        top_wheel_PID = new rev::CANPIDController(top_wheel_spark->GetPIDController());
+        top_wheel_encoder = new rev::CANEncoder(top_wheel_spark->GetEncoder());
+       
+        bottom_wheel_PID = new rev::CANPIDController(bottom_wheel_spark->GetPIDController());
+        bottom_wheel_encoder = new rev::CANEncoder(bottom_wheel_spark->GetEncoder());
+
 
         ConfigureSpark(belt_spark, belt_PID,
             k_P_belt, k_I_belt, k_D_belt, k_Iz_belt, k_FF_belt, k_min_out_belt, k_max_out_belt, rev::CANSparkMax::IdleMode::kBrake);
@@ -98,53 +105,57 @@
     }
 
     void Shooter::FarShoot() {
-        top_wheel_talon->Set(ControlMode::Velocity, top_shoot_speed * far_modifier);
-        bottom_wheel_talon->Set(ControlMode::Velocity, bottom_shoot_speed * far_modifier); 
+        // top_wheel_spark->Set(ControlMode::Velocity, top_shoot_speed * far_modifier);
+        top_wheel_PID->SetReference(1, rev::ControlType::kVelocity);
+        // bottom_wheel_spark->Set(ControlMode::Velocity, bottom_shoot_speed * far_modifier); 
+        bottom_wheel_PID->SetReference(5000, rev::ControlType::kVelocity);
         belt_PID->SetReference(belt_speed, rev::ControlType::kVelocity); 
         right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
     }
 
     void Shooter::MediumShoot() {
-        top_wheel_talon->Set(ControlMode::Velocity, top_shoot_speed * medium_modifier); // need to config, when get testing equip 
-        bottom_wheel_talon->Set(ControlMode::Velocity, bottom_shoot_speed * medium_modifier); 
+        // top_wheel_spark->Set(ControlMode::Velocity, top_shoot_speed * medium_modifier); // need to config, when get testing equip 
+        // bottom_wheel_spark->Set(ControlMode::Velocity, bottom_shoot_speed * medium_modifier); 
         belt_PID->SetReference(belt_speed, rev::ControlType::kVelocity); 
         right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
     }
 
     void Shooter::CloseShoot() {
         right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
-        top_wheel_talon->Set(ControlMode::Velocity, top_shoot_speed * close_modifier);
-        bottom_wheel_talon->Set(ControlMode::Velocity, bottom_shoot_speed * close_modifier);
+        // top_wheel_spark->Set(ControlMode::Velocity, top_shoot_speed * close_modifier);
+        // bottom_wheel_spark->Set(ControlMode::Velocity, bottom_shoot_speed * close_modifier);
         belt_PID->SetReference(belt_speed, rev::ControlType::kVelocity); 
    
     }
 
     void Shooter::Intake() {                
         right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
-        top_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
-        bottom_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        // top_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
+        // bottom_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
         belt_spark->Set(0);
 
     }
 
     void Shooter::Stop() {
         right_indexer_spark->Set(0);
-        top_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
-        bottom_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        // top_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
+        // bottom_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
+        top_wheel_spark->Set(0);
+        bottom_wheel_spark->Set(0);
         belt_spark->Set(0);
     }
 
     void Shooter::Waiting() { 
         right_indexer_spark->Set(0.1);
-        top_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
-        bottom_wheel_talon->Set(ControlMode::PercentOutput, 0.0);
+        // top_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
+        // bottom_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
         belt_spark->Set(0);
     }
 
     void Shooter::Reverse() {  
         right_indexer_spark->Set(-1.0);
-        top_wheel_talon->Set(ControlMode::PercentOutput, -1.0);
-        bottom_wheel_talon->Set(ControlMode::PercentOutput, -1.0);
+        // top_wheel_spark->Set(ControlMode::PercentOutput, -1.0);
+        // bottom_wheel_spark->Set(ControlMode::PercentOutput, -1.0);
         belt_spark->Set(-1.0);
     }
 
