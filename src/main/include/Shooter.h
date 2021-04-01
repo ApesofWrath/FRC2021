@@ -24,7 +24,7 @@ class Shooter {
 
     // const int topRollerSpark = 2;
     // const int bottomRollerSpark = 3;
-    double k_P_shooter = 0.1, k_I_shooter = 0, k_D_shooter = 0.0, k_Iz_shooter = 0, k_FF_shooter = 0, k_max_out_shooter = 0.95f, k_min_out_shooter = -0.95f; // Not tuned yet
+    double k_P_shooter = 0.00015, k_I_shooter = 0, k_D_shooter = 0.0, k_Iz_shooter = 0, k_FF_shooter = 0.000022, k_max_out_shooter = 0.95f, k_min_out_shooter = -0.95f; // Not tuned yet
     double k_P_belt = 10.8, k_I_belt = 0, k_D_belt = 0.0, k_Iz_belt = 0, k_FF_belt = 0, k_max_out_belt = 0, k_min_out_belt = 0;
     double k_P_indexer = 10.8, k_I_indexer = 0, k_D_indexer = 0.0, k_Iz_indexer = 0, k_FF_indexer = 0, k_max_out_indexer = 0, k_min_out_indexer = 0;
 

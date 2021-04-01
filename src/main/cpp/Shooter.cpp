@@ -34,9 +34,9 @@
 
 
         ConfigureSpark(top_wheel_spark, top_wheel_PID,
-            0.1, k_I_shooter, k_D_shooter, k_Iz_shooter, k_FF_shooter, -0.95f, 0.95f, rev::CANSparkMax::IdleMode::kBrake);
+            k_P_shooter, k_I_shooter, k_D_shooter, k_Iz_shooter, k_FF_shooter, -0.95, 0.95, rev::CANSparkMax::IdleMode::kBrake);
         ConfigureSpark(bottom_wheel_spark, bottom_wheel_PID,
-            k_P_shooter, k_I_shooter, k_D_shooter, k_Iz_shooter, k_FF_shooter, k_min_out_shooter, k_max_out_shooter, rev::CANSparkMax::IdleMode::kBrake);
+            k_P_shooter, k_I_shooter, k_D_shooter, k_Iz_shooter, k_FF_shooter, -0.95, 0.95, rev::CANSparkMax::IdleMode::kBrake);
 
         ConfigureSpark(belt_spark, belt_PID,
             k_P_belt, k_I_belt, k_D_belt, k_Iz_belt, k_FF_belt, k_min_out_belt, k_max_out_belt, rev::CANSparkMax::IdleMode::kBrake);
@@ -45,7 +45,7 @@
         ConfigureSpark(right_indexer_spark, right_indexer_PID,
             k_P_indexer, k_I_indexer, k_D_indexer, k_Iz_indexer, k_FF_indexer, k_max_out_indexer, k_min_out_indexer, rev::CANSparkMax::IdleMode::kBrake);
         
-        left_indexer_spark->Follow(*right_indexer_spark, true);
+        // left_indexer_spark->Follow(*right_indexer_spark, true);
     }
 
     void Shooter::ShooterStateMachine(){
@@ -112,9 +112,13 @@
 
     void Shooter::FarShoot() {
         // top_wheel_spark->Set(ControlMode::Velocity, top_shoot_speed * far_modifier);
-        top_wheel_PID->SetReference(3, rev::ControlType::kVelocity);
-        // bottom_wheel_spark->Set(ControlMode::Velocity, bottom_shoot_speed * far_modifier); 
-        bottom_wheel_PID->SetReference(3, rev::ControlType::kVelocity);
+        
+        top_wheel_PID->SetReference(-5750, rev::ControlType::kVelocity);
+        // top_wheel_spark->Set(.1);
+
+        bottom_wheel_PID->SetReference(5750, rev::ControlType::kVelocity);
+        // bottom_wheel_spark->Set(.1);
+
         // belt_PID->SetReference(belt_speed, rev::ControlType::kVelocity); 
         // right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
     }
@@ -153,8 +157,8 @@
 
     void Shooter::Waiting() { 
         right_indexer_spark->Set(0.1);
-        // top_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
-        // bottom_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
+        top_wheel_spark->Set(0.0);
+        bottom_wheel_spark->Set(0.0);
         belt_spark->Set(0);
     }
 
@@ -173,7 +177,7 @@
         PIDController->SetD(kD);
         PIDController->SetIZone(kIz);
         PIDController->SetFF(kFF);
-        PIDController->SetOutputRange(minOut, maxOut);
+        // PIDController->SetOutputRange(minOut, maxOut);
 
         spark->SetIdleMode(idleMode);
 

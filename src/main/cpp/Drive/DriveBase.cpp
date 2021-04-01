@@ -118,10 +118,10 @@ DriveBase::DriveBase(int l1, int l2,
 
 
 	// Create TalonFXs
-	canTalonLeft1 = new WPI_TalonFX(LF);
-	canTalonLeft2 = new WPI_TalonFX(L2);
-	canTalonRight1 = new WPI_TalonFX(RF);
-	canTalonRight2 = new WPI_TalonFX(R2);
+	canTalonLeft1 = new WPI_TalonFX(0);
+	canTalonLeft2 = new WPI_TalonFX(0);
+	canTalonRight1 = new WPI_TalonFX(0);
+	canTalonRight2 = new WPI_TalonFX(0);
 	
 	canTalonLeft1->SetSafetyEnabled(false);
     canTalonLeft2->SetSafetyEnabled(false);
