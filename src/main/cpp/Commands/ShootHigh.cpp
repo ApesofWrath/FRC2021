@@ -22,7 +22,15 @@
     }
 
     bool ShootHighCommand::IsFinished() {
-        return !(m_joystick->GetRawButton(1));
+        if((m_joystick->GetRawButton(3))){
+            return false;
+
+        }
+        m_counter++;
+        frc::SmartDashboard::PutNumber("!shooterfinishedcounter", m_counter);
+        //make function to stop motor 
+        m_shooter->StopMotors();
+        return true;
     }
 
     ShootHighCommand::~ShootHighCommand(){

@@ -34,17 +34,31 @@
 
 
         ConfigureSpark(top_wheel_spark, top_wheel_PID,
-            k_P_shooter, k_I_shooter, k_D_shooter, k_Iz_shooter, k_FF_shooter, -0.95, 0.95, rev::CANSparkMax::IdleMode::kBrake);
+            k_P_shooter, k_I_shooter, k_D_shooter, k_Iz_shooter, k_FF_shooter, -1, 1, rev::CANSparkMax::IdleMode::kCoast);
         ConfigureSpark(bottom_wheel_spark, bottom_wheel_PID,
-            k_P_shooter, k_I_shooter, k_D_shooter, k_Iz_shooter, k_FF_shooter, -0.95, 0.95, rev::CANSparkMax::IdleMode::kBrake);
+            k_P_shooter, k_I_shooter, k_D_shooter, k_Iz_shooter, k_FF_shooter, -1, 1, rev::CANSparkMax::IdleMode::kCoast);
 
         ConfigureSpark(belt_spark, belt_PID,
-            k_P_belt, k_I_belt, k_D_belt, k_Iz_belt, k_FF_belt, k_min_out_belt, k_max_out_belt, rev::CANSparkMax::IdleMode::kBrake);
+            k_P_belt, k_I_belt, k_D_belt, k_Iz_belt, k_FF_belt, k_min_out_belt, k_max_out_belt, rev::CANSparkMax::IdleMode::kCoast);
         ConfigureSpark(left_indexer_spark, left_indexer_PID,
-            k_P_indexer, k_I_indexer, k_D_indexer, k_Iz_indexer, k_FF_indexer, k_max_out_indexer, k_min_out_indexer, rev::CANSparkMax::IdleMode::kBrake);
+            k_P_indexer, k_I_indexer, k_D_indexer, k_Iz_indexer, k_FF_indexer, k_max_out_indexer, k_min_out_indexer, rev::CANSparkMax::IdleMode::kCoast);
         ConfigureSpark(right_indexer_spark, right_indexer_PID,
-            k_P_indexer, k_I_indexer, k_D_indexer, k_Iz_indexer, k_FF_indexer, k_max_out_indexer, k_min_out_indexer, rev::CANSparkMax::IdleMode::kBrake);
+            k_P_indexer, k_I_indexer, k_D_indexer, k_Iz_indexer, k_FF_indexer, k_max_out_indexer, k_min_out_indexer, rev::CANSparkMax::IdleMode::kCoast);
         
+
+        // the holy zeroes
+        top_wheel_spark->Set(0);
+        bottom_wheel_spark->Set(0);
+        belt_spark->Set(0);
+
+        belt_encoder->SetPosition(0);
+        belt_PID->SetReference(0, rev::ControlType::kPosition);
+
+        top_wheel_encoder->SetPosition(0);
+        top_wheel_PID->SetReference(0, rev::ControlType::kPosition);
+
+        bottom_wheel_encoder->SetPosition(0);
+        bottom_wheel_PID->SetReference(0, rev::ControlType::kPosition);
         // left_indexer_spark->Follow(*right_indexer_spark, true);
     }
 
@@ -115,10 +129,11 @@
         // top_wheel_spark->Set(.1);
 
         // bottom_wheel_PID->SetReference(5750, rev::ControlType::kVelocity);
-        bottom_wheel_spark->Set(.8);
+        // bottom_wheel_spark->Set(.8);
 
         // belt_PID->SetReference(-5650, rev::ControlType::kVelocity); 
         // belt_spark->Set(-.96);
+
         // right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
     }
 

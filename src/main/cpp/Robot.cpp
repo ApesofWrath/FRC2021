@@ -137,7 +137,7 @@ void Robot::TeleopInit() {
     m_autonomousCommand = nullptr;
   
   }
-  // frc2::CommandScheduler::GetInstance().Enable(); // Just to be safe
+  frc2::CommandScheduler::GetInstance().Enable(); // enable me for command based 
   drive->ResetConfigs();
 }
 void Robot::TeleopPeriodic() {

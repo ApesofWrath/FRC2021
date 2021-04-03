@@ -13,7 +13,7 @@ RobotContainer::RobotContainer(AutonDrive* drive, Shooter* shooter, Arm* arm, In
     m_arm = arm;
     m_intake = intake;
     m_joystick;
-    m_shooter_subsystem = new ShooterSubsystem(m_shooter);
+    m_shooter_subsystem = new ShooterSubsystem(m_shooter, m_joystick);
 
     frc2::CommandScheduler::GetInstance().OnCommandInitialize(
       [](const frc2::Command& command) {
@@ -216,11 +216,11 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
 void RobotContainer::ConfigureButtonBindings() {
     m_joystick = new frc::Joystick(2);
-    frc2::JoystickButton(m_joystick, 1)
+    frc2::JoystickButton(m_joystick, 3)
         .WhenPressed(new ShootHighCommand(m_shooter_subsystem, m_joystick));
 
-    frc2::JoystickButton(m_joystick, 2)
-        .WhenPressed(new ShootLowCommand(m_shooter_subsystem, m_joystick));
+    // frc2::JoystickButton(m_joystick, 2)
+    //     .WhenPressed(new ShootLowCommand(m_shooter_subsystem, m_joystick));
     // frc2::JoystickButton(&m_joystick, 1).WhenPressed(new ShootHigh())
 }
 /*
