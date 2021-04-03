@@ -14,7 +14,7 @@
 
 #include <frc/Joystick.h>
 #include "ControlPanel.h"
-#include "Drive/DriveController.h"
+// #include "Drive/DriveController.h"
 #include "RobotContainer.h"
 #include "Auton/AutonDrive.h"
 #include "AHRS.h"
@@ -70,22 +70,13 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
-  std::string getColor(Colors c);
-    
-  void UpdateButtons();
 
-  bool stop_intake, in_intake, out_intake;
-  
-  bool shoot_shooter, intake_shooter, stop_shooter, waiting_shooter;
-
+  SwerveDrive* GetSwerveDrive();
  private:
-  const Colors kDesColorDefault = Colors::WHITE;
-  // const std::string kAutoNameDefault = "Default";
-  // const std::string kAutoNameCustom = "My Auto";
-  std::string m_autoSelected;
-  AutonDrive *a_drive;
-  frc::SendableChooser<Colors> m_descolor_chooser;
-  
-  frc2::Command* m_autonomousCommand = nullptr;
-  RobotContainer *m_container;
+
+  SwerveDrive* m_SwerveDrive;
+  frc::Joystick* m_Joy;
+
 };
+
+extern Robot* s_Nova;

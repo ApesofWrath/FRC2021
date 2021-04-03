@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Robot.h"
+#include "Debug.h"
 
 
 #include <iostream>
@@ -13,54 +14,67 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
-constexpr double kRamseteB = 2;
-constexpr double kRamseteZeta = 0.7;
+Robot* s_Nova;
 
+// constexpr double kRamseteB = 2;
+// constexpr double kRamseteZeta = 0.7;
+
+
+SwerveDrive* Robot::GetSwerveDrive() {
+  return m_SwerveDrive;
+}
 
 
 
 void Robot::RobotInit() {
-  std::cout << "dc\n";
-  drive = new DriveController();
-  shooter = new Shooter();
-  arm = new Arm();
-  intake = new Intake();
-  controlpanel = new ControlPanel();
+  s_Nova = this;
+  initDebugging();
 
-  std::cout << "robo_init\n";
-  a_drive = new AutonDrive(drive, drive->ahrs);
-  std::cout << "auto init complete\n";
-  m_container = new RobotContainer(a_drive, shooter, arm, intake);
-  std::cout << "robo container init complete\n";
+
+  m_SwerveDrive = new SwerveDrive({0, 4}, {1, 5}, {2, 6}, {3, 7});
+  m_Joy = new frc::Joystick(0);
+
+//   std::cout << "dc\n";
+//   drive = new DriveController();
+//   shooter = new Shooter();
+//   arm = new Arm();
+//   intake = new Intake();
+//   controlpanel = new ControlPanel();
+
+//   std::cout << "robo_init\n";
+//   a_drive = new AutonDrive(drive, drive->ahrs);
+//   std::cout << "auto init complete\n";
+//   m_container = new RobotContainer(a_drive, shooter, arm, intake);
+//   std::cout << "robo container init complete\n";
   
-/*   m_descolor_chooser.AddDefault("None",  Colors::WHITE);
-  m_descolor_chooser.AddObject("Red",    Colors::RED);
-  m_descolor_chooser.AddObject("Blue",   Colors::BLUE); 
-  m_descolor_chooser.AddObject("Green",  Colors::GREEN);
-  m_descolor_chooser.AddObject("Yellow", Colors::YELLOW);*/
-  m_container->InitAutoChoices();
-  std::cout << "auto choices init complete\n";
+// /*   m_descolor_chooser.AddDefault("None",  Colors::WHITE);
+//   m_descolor_chooser.AddObject("Red",    Colors::RED);
+//   m_descolor_chooser.AddObject("Blue",   Colors::BLUE); 
+//   m_descolor_chooser.AddObject("Green",  Colors::GREEN);
+//   m_descolor_chooser.AddObject("Yellow", Colors::YELLOW);*/
+//   m_container->InitAutoChoices();
+//   std::cout << "auto choices init complete\n";
 
-  frc::SmartDashboard::PutData("Auto Modes", &(m_container->m_chooser));
-/*
-  m_descolor_chooser.AddDefault("None",  Colors::WHITE);
-  m_descolor_chooser.AddObject("Red",    Colors::RED);
-  m_descolor_chooser.AddObject("Blue",   Colors::BLUE);
-  m_descolor_chooser.AddObject("Green",  Colors::GREEN);
-  m_descolor_chooser.AddObject("Yellow", Colors::YELLOW);
+//   frc::SmartDashboard::PutData("Auto Modes", &(m_container->m_chooser));
+// /*
+//   m_descolor_chooser.AddDefault("None",  Colors::WHITE);
+//   m_descolor_chooser.AddObject("Red",    Colors::RED);
+//   m_descolor_chooser.AddObject("Blue",   Colors::BLUE);
+//   m_descolor_chooser.AddObject("Green",  Colors::GREEN);
+//   m_descolor_chooser.AddObject("Yellow", Colors::YELLOW);
 
 
 
-*/
-/*d
-  Falcon_T = new TalonFX(0);
-  Falcon_T2 = new TalonFX(1);
+// */
+// /*d
+//   Falcon_T = new TalonFX(0);
+//   Falcon_T2 = new TalonFX(1);
 
-  T46 = new TalonSRX(46);
-  T46->SetInverted(InvertType::InvertMotorOutput);
-*/
-  JoyThrottle = new frc::Joystick(0);
-  JoyWheel = new frc::Joystick(1);
+//   T46 = new TalonSRX(46);
+//   T46->SetInverted(InvertType::InvertMotorOutput);
+// */
+//   JoyThrottle = new frc::Joystick(0);
+//   JoyWheel = new frc::Joystick(1);
 
   m_descolor_chooser.SetDefaultOption("None",  Colors::WHITE);
   m_descolor_chooser.AddOption("Red",    Colors::RED);
@@ -74,13 +88,13 @@ void Robot::RobotInit() {
 
 	camera.SetResolution(320, 190);
 
-  tsm = new TeleopStateMachine(shooter, intake, controlpanel, arm);
+//   tsm = new TeleopStateMachine(shooter, intake, controlpanel, arm);
   
-  JoyOp = new frc::Joystick(2);
+//   JoyOp = new frc::Joystick(2);
 }
 
 void Robot::RobotPeriodic() {
-  frc2::CommandScheduler::GetInstance().Run();
+  // frc2::CommandScheduler::GetInstance().Run();
 
 }
 
@@ -107,22 +121,30 @@ void Robot::AutonomousInit() {
   }
 
   m_autonomousCommand = m_container->GetAutonomousCommand();
-
+  // std::cout << "ac gotten\n";
   if (m_autonomousCommand != nullptr) {
     m_autonomousCommand->Schedule();
+    //   std::cout << "ac schedule\n";
   }
 
 
-  // a_drive->ResetOdometry();
+  // // a_drive->ResetOdometry();
 }
 
 void Robot::AutonomousPeriodic() {
+  // // if (m_container->m_autoSelected == kAutoNameCustom) {
+  // //   // Custom Auto goes here
+  // // } else {
+  // //   // Default Auto goes here
+  // // }
 
-  frc::Pose2d pose = a_drive->GetPose();
+  // // a_drive->Update();
 
-  frc::SmartDashboard::PutNumber("heading", pose.Rotation().Degrees().value());
-  frc::SmartDashboard::PutNumber("translation x", pose.Translation().X().value());
-  frc::SmartDashboard::PutNumber("translation y", pose.Translation().Y().value());
+  // frc::Pose2d pose = a_drive->GetPose();
+
+  // frc::SmartDashboard::PutNumber("heading", pose.Rotation().Degrees().value());
+  // frc::SmartDashboard::PutNumber("translation x", pose.Translation().X().value());
+  // frc::SmartDashboard::PutNumber("translation y", pose.Translation().Y().value());
 
 
 
@@ -139,9 +161,13 @@ void Robot::TeleopInit() {
   }
   frc2::CommandScheduler::GetInstance().Enable(); // enable me for command based 
   drive->ResetConfigs();
+
+  frc::Shuffleboard::SelectTab("Drive");
+
+  m_SwerveDrive->StopAll();
 }
 void Robot::TeleopPeriodic() {
-  
+  m_SwerveDrive->Update(m_Joy);
   drive->RunTeleopDrive(JoyThrottle, JoyWheel, true, false, false);
   tsm->StateMachine(tsm->GatherButtonDataFromJoysticks(
     JoyThrottle, JoyWheel, JoyOp));
@@ -152,7 +178,7 @@ void Robot::TeleopPeriodic() {
 
 void Robot::UpdateButtons(){
   
-}
+// }
 
 void Robot::TestPeriodic() {}
 
