@@ -18,6 +18,9 @@ struct SwerveModule_Falcon {
 
     void Reverse();
 
+    void ConfigPIDYaw(double p = 0, double i = 0, double d = 0);
+    void ConfigPIDDrive(double p = 0, double i = 0, double d = 0);
+    
 };
 
 class SwerveDrive {
@@ -25,6 +28,10 @@ private:
     SwerveModule_Falcon m_FrontLeft, m_FrontRight, m_BackLeft, m_BackRight;
 
     AHRS* m_AHRS;
+
+    double m_CurrentTargetYawPosition = 0;
+
+    bool m_Strafe = true;
 
 public:
 
@@ -42,5 +49,9 @@ public:
 
     void SetAllTargetAngle(double angle);
     void SetDriveTargetVelocity(double speed);
+
+    inline double GetCurrentTargetYawPosition() { return m_CurrentTargetYawPosition; };
+
+    void SetMovement(double speed, double movementDirection, double facing);
 
 };

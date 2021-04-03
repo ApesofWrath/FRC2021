@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 #include "Robot.h"
+#include "Debug.h"
 
 
 #include <iostream>
@@ -13,13 +14,22 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 
+Robot* s_Nova;
+
 // constexpr double kRamseteB = 2;
 // constexpr double kRamseteZeta = 0.7;
 
 
+SwerveDrive* Robot::GetSwerveDrive() {
+  return m_SwerveDrive;
+}
+
 
 
 void Robot::RobotInit() {
+  s_Nova = this;
+  initDebugging();
+
 
   m_SwerveDrive = new SwerveDrive({0, 4}, {1, 5}, {2, 6}, {3, 7});
   m_Joy = new frc::Joystick(0);
@@ -159,6 +169,8 @@ void Robot::TeleopInit() {
   // }
 
   // drive->ResetConfigs();
+
+  frc::Shuffleboard::SelectTab("Drive");
 
   m_SwerveDrive->StopAll();
 }

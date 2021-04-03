@@ -25,10 +25,13 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
-  
+
+  SwerveDrive* GetSwerveDrive();
  private:
 
   SwerveDrive* m_SwerveDrive;
   frc::Joystick* m_Joy;
 
 };
+
+extern Robot* s_Nova;
