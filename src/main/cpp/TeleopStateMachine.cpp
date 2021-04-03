@@ -109,7 +109,7 @@ void TeleopStateMachine::StateMachine(ButtonData data) {
         case WAIT_FOR_BUTTON_STATE:
           arm->intake_arm_state = arm->UP_STATE;
           intake->intake_state = intake->STOP_STATE;
-          shooter->shooter_state = shooter->WAITING_STATE;
+          shooter->shooter_state = shooter->MEDIUM_SHOOT_STATE;
           control_panel->state = control_panel->IDLE;
           last_state = WAIT_FOR_BUTTON_STATE;
         break;
