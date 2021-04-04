@@ -141,7 +141,7 @@ constexpr auto K_MAX_ACCEL = 10.77;
 // const double MINUTE_CONVERSION = 600.0; //part of the conversion from ticks velocity to rpm
 
 const double TICKS_PER_ROTATION_FALCON = 2048;
-const double SWERVE_MOD_ROTATE_RATIO = 13.64;
+const double SWERVE_MOD_ROTATE_RATIO = 21.21;
 const double SWERVE_MOD_DRIVE_RATIO = 7.39;
 const double WHEEL_RADIUS = 0.0762;
 const double METERS_PER_WHEEL_ROTATION = WHEEL_RADIUS * 2 * PI;
@@ -165,10 +165,10 @@ struct SwerveDrivePIDConfig {
 
 
 const SwerveDrivePIDConfig SWERVE_CONFIG_PID = {
-    {0.005, 0, 0}, {0.005, 0, 0.0}, // Front Left
-    {0.005, 0, 0}, {0.005, 0, 0.0}, // Front Right
-    {0.005, 0, 0}, {0.005, 0, 0.0}, // Back Left
-    {0.005, 0, 0}, {0.005, 0, 0.0}  // Back Right
+    {0.1, 0, 0}, {0.1, 0, 0.0}, // Front Left
+    {0.1, 0, 0}, {0.1, 0, 0.0}, // Front Right
+    {0.1, 0, 0}, {0.1, 0, 0.0}, // Back Left
+    {0.1, 0, 0}, {0.1, 0, 0.0}  // Back Right
 };
 
 

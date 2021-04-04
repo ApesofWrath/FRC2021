@@ -6,7 +6,7 @@
 #include "AHRS.h"
 
 struct SwerveModule {
-    int yawMotor, driveMotor;
+    int driveMotor, yawMotor;
 };
 
 struct SwerveModule_Falcon {

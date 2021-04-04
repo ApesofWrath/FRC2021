@@ -57,106 +57,121 @@ SwerveDrive::SwerveDrive(SwerveModule frontLeft, SwerveModule frontRight, Swerve
 double lastAngle = 0;
 
 void SwerveDrive::Update(frc::Joystick* joy) {
-    if (joy->GetTriggerPressed()) {
-        m_Strafe = !m_Strafe;
+    // if (joy->GetTriggerPressed()) {
+    //     m_Strafe = !m_Strafe;
+    // }
+
+    // // if (m_Strafe) {
+    double kp_y_fl = drive_debug::kP_fl.GetDouble(0.1f);
+    double kp_y_fr = drive_debug::kP_fr.GetDouble(0.1f);
+    double kp_y_bl = drive_debug::kP_bl.GetDouble(0.1f);
+    double kp_y_br = drive_debug::kP_br.GetDouble(0.1f);
+
+    m_FrontLeft.yawMotor->Config_kP(0, kp_y_fl);
+    m_FrontRight.yawMotor->Config_kP(0, kp_y_fr);
+    m_BackLeft.yawMotor->Config_kP(0, kp_y_bl);
+    m_BackRight.yawMotor->Config_kP(0, kp_y_br);
+
+    m_FrontLeft.driveMotor->Config_kP(0, kp_y_fl);
+    m_FrontRight.driveMotor->Config_kP(0, kp_y_fr);
+    m_BackLeft.driveMotor->Config_kP(0, kp_y_bl);
+    m_BackRight.driveMotor->Config_kP(0, kp_y_br);
+
+    // SetAllTargetAngle(PI * joy->GetThrottle());
+
+    // //BasicPower(joy->GetY() * (float)joy->GetThrottle(), joy->GetX() * (float)joy->GetThrottle());
+    double x = joy->GetX();
+
+    if (abs(x) < 0.05) x = 0;
+    double y = -joy->GetY();
+    if (abs(y) < 0.05) y = 0;
+
+    double angle = std::atan2(y, x) + PI / 2.0;
+
+    // angle = PI / 2.0;
+    double mag = std::abs(std::sqrt(x * x + y * y));
+    if (angle < PI / 2.0 && lastAngle > 3 * PI / 2.0) {
+        angle += 2 * PI;
     }
 
-    if (m_Strafe) {
-        double kp_y_fl = drive_debug::kP_fl.GetDouble(0.0f);
-        double kp_y_fr = drive_debug::kP_fr.GetDouble(0.0f);
-        double kp_y_bl = drive_debug::kP_bl.GetDouble(0.0f);
-        double kp_y_br = drive_debug::kP_br.GetDouble(0.0f);
-
-        m_FrontLeft.yawMotor->Config_kP(0, kp_y_fl);
-        m_FrontRight.yawMotor->Config_kP(0, kp_y_fr);
-        m_BackLeft.yawMotor->Config_kP(0, kp_y_bl);
-        m_BackRight.yawMotor->Config_kP(0, kp_y_br);
-
-        m_FrontLeft.yawMotor->Config_kP(0, kp_y_fl);
-        m_FrontRight.yawMotor->Config_kP(0, kp_y_fr);
-        m_BackLeft.yawMotor->Config_kP(0, kp_y_bl);
-        m_BackRight.yawMotor->Config_kP(0, kp_y_br);
-
-        //SetAllTargetAngle(PI * joy->GetThrottle());
-
-        //BasicPower(joy->GetY() * (float)joy->GetThrottle(), joy->GetX() * (float)joy->GetThrottle());
-        double x = joy->GetX();
-
-        if (abs(x) < 0.05) x = 0;
-        double y = -joy->GetY();
-        if (abs(y) < 0.05) y = 0;
-
-        double angle = std::atan2(y, x) + PI / 2.0;
-
-        // angle = PI / 2.0;
-        double mag = std::abs(std::sqrt(x * x + y * y));
-        if (angle < PI / 2.0 && lastAngle > 3 * PI / 2.0) {
-            angle += 2 * PI;
-        }
-
-        if (lastAngle < PI / 2.0 && angle > 3 * PI / 2.0) {
-            angle -= 2 * PI;
-        }
-
-
-        lastAngle = angle;
-        SetAllTargetAngle(angle);
-        SetDriveTargetVelocity(mag);
-        // frc::SmartDashboard::PutNumber("Target Strafe Angle", angle);
-        // frc::SmartDashboard::PutNumber("Target Speed", mag);
-        // frc::SmartDashboard::PutNumber("Joystick X", x);
-        // frc::SmartDashboard::PutNumber("Joystick Y", y);
-    } else {
-        double vx = joy->GetX();
-
-        if (abs(vx) < 0.05) vx = 0;
-        double vy = -joy->GetY();
-        if (abs(vy) < 0.05) vy = 0;
-
-        double omega = joy->GetZ() * PI;
-
-        double A = vx - omega * (L / 2.0);
-        double B = vx + omega * (L / 2.0);
-        double C = vy - omega * (W / 2.0);
-        double D = vy + omega * (W / 2.0);
-
-        { // Wheel 1 (FR)
-            double speed = std::sqrt(B * B + C * C);
-            double angle = std::atan2(B, C);
-
-
-            m_FrontRight.driveMotor->Set(ControlMode::Velocity, speed);
-            m_FrontRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
-        }
-
-        { // Wheel 2 (FL)
-            double speed = std::sqrt(B * B + D * D);
-            double angle = std::atan2(B, D);
-
-
-            m_FrontLeft.driveMotor->Set(ControlMode::Velocity, speed);
-            m_FrontLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
-        }
-
-        { // Wheel 3 (BL)
-            double speed = std::sqrt(A * A + D * D);
-            double angle = std::atan2(A, D);
-
-
-            m_BackLeft.driveMotor->Set(ControlMode::Velocity, speed);
-            m_BackLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
-        }
-
-        { // Wheel 4 (BR)
-            double speed = std::sqrt(A * A + C * C);
-            double angle = std::atan2(A, C);
-
-
-            m_BackRight.driveMotor->Set(ControlMode::Velocity, speed);
-            m_BackRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
-        }
-
+    if (lastAngle < PI / 2.0 && angle > 3 * PI / 2.0) {
+        angle -= 2 * PI;
     }
+
+
+    lastAngle = angle;
+    SetAllTargetAngle(angle);
+    SetDriveTargetVelocity(mag);
+
+    // m_FrontLeft.driveMotor->Set(ControlMode::PercentOutput, 0.2);
+    // m_FrontLeft.yawMotor->Set(ControlMode::PercentOutput, 0.2);
+
+    // m_FrontRight.driveMotor->Set(ControlMode::PercentOutput, 0.2);
+    // m_FrontRight.yawMotor->Set(ControlMode::PercentOutput, 0.2);
+
+    // m_BackLeft.driveMotor->Set(ControlMode::PercentOutput, 0.2);
+    // m_BackLeft.yawMotor->Set(ControlMode::PercentOutput, 0.2);
+
+    // m_BackRight.driveMotor->Set(ControlMode::PercentOutput, 0.2);
+    // m_BackRight.yawMotor->Set(ControlMode::PercentOutput, 0.2);
+
+
+
+    // frc::SmartDashboard::PutNumber("Target Strafe Angle", angle);
+    // frc::SmartDashboard::PutNumber("Target Speed", mag);
+    // frc::SmartDashboard::PutNumber("Joystick X", x);
+    // frc::SmartDashboard::PutNumber("Joystick Y", y);
+    // } else {
+        // double vx = joy->GetX();
+
+        // if (abs(vx) < 0.05) vx = 0;
+        // double vy = -joy->GetY();
+        // if (abs(vy) < 0.05) vy = 0;
+
+        // double omega = joy->GetZ() * PI;
+
+        // double A = vx - omega * (L / 2.0);
+        // double B = vx + omega * (L / 2.0);
+        // double C = vy - omega * (W / 2.0);
+        // double D = vy + omega * (W / 2.0);
+
+        // { // Wheel 1 (FR)
+        //     double speed = std::sqrt(B * B + C * C);
+        //     double angle = std::atan2(B, C);
+
+
+        //     m_FrontRight.driveMotor->Set(ControlMode::Velocity, speed);
+        //     m_FrontRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+        // }
+
+        // { // Wheel 2 (FL)
+        //     double speed = std::sqrt(B * B + D * D);
+        //     double angle = std::atan2(B, D);
+
+
+        //     m_FrontLeft.driveMotor->Set(ControlMode::Velocity, speed);
+        //     m_FrontLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+        // }
+
+        // { // Wheel 3 (BL)
+        //     double speed = std::sqrt(A * A + D * D);
+        //     double angle = std::atan2(A, D);
+
+
+        //     m_BackLeft.driveMotor->Set(ControlMode::Velocity, speed);
+        //     m_BackLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+        // }
+
+        // { // Wheel 4 (BR)
+        //     double speed = std::sqrt(A * A + C * C);
+        //     double angle = std::atan2(A, C);
+
+
+        //     m_BackRight.driveMotor->Set(ControlMode::Velocity, speed);
+        //     m_BackRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+        // }
+
+    // }
 
 }
 

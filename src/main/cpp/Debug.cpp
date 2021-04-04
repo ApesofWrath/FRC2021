@@ -22,10 +22,10 @@ void initDebugging() {
       wprops.insert({"max", nt::Value::MakeDouble(1)});
 
 
-      frc::SimpleWidget kp_fl_sw = s_DriveTab->AddPersistent("kP FL", 0.0f).WithWidget(frc::BuiltInWidgets::kNumberSlider).WithSize(2, 1).WithProperties(wprops);
-      frc::SimpleWidget kp_fr_sw = s_DriveTab->AddPersistent("kP FR", 0.0f).WithWidget(frc::BuiltInWidgets::kNumberSlider).WithSize(2, 1).WithProperties(wprops);
-      frc::SimpleWidget kp_bl_sw = s_DriveTab->AddPersistent("kP BL", 0.0f).WithWidget(frc::BuiltInWidgets::kNumberSlider).WithSize(2, 1).WithProperties(wprops);
-      frc::SimpleWidget kp_br_sw = s_DriveTab->AddPersistent("kP BR", 0.0f).WithWidget(frc::BuiltInWidgets::kNumberSlider).WithSize(2, 1).WithProperties(wprops);
+      frc::SimpleWidget kp_fl_sw = s_DriveTab->AddPersistent("kP FL", 0.1f).WithWidget(frc::BuiltInWidgets::kNumberSlider).WithSize(2, 1).WithProperties(wprops);
+      frc::SimpleWidget kp_fr_sw = s_DriveTab->AddPersistent("kP FR", 0.1f).WithWidget(frc::BuiltInWidgets::kNumberSlider).WithSize(2, 1).WithProperties(wprops);
+      frc::SimpleWidget kp_bl_sw = s_DriveTab->AddPersistent("kP BL", 0.1f).WithWidget(frc::BuiltInWidgets::kNumberSlider).WithSize(2, 1).WithProperties(wprops);
+      frc::SimpleWidget kp_br_sw = s_DriveTab->AddPersistent("kP BR", 0.1f).WithWidget(frc::BuiltInWidgets::kNumberSlider).WithSize(2, 1).WithProperties(wprops);
       drive_debug::kP_fl = kp_fl_sw.GetEntry();
       drive_debug::kP_fr = kp_fr_sw.GetEntry();
       drive_debug::kP_bl = kp_bl_sw.GetEntry();
