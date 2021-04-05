@@ -11,10 +11,10 @@ SwerveModule_Falcon::SwerveModule_Falcon(SwerveModule module, PIDSettings drive,
     driveMotor->Config_kD(0, drive.kD);
 
     yawMotor = new TalonFX(module.yawMotor);
-    yawMotor->Config_kP(0, yaw.kP);
-    yawMotor->Config_kI(0, yaw.kI);
-    yawMotor->Config_kD(0, yaw.kD);
-    yawMotor->Config_kF(0, 0);
+    yawMotor->Config_kP(0.0005, yaw.kP);
+    yawMotor->Config_kI(0.0005, yaw.kI);
+    yawMotor->Config_kD(0.0005, yaw.kD);
+    yawMotor->Config_kF(1.079, 0);
 
 }
 
@@ -62,6 +62,11 @@ void SwerveDrive::Update(frc::Joystick* joy) {
     // }
 
     // // if (m_Strafe) {
+    frc::SmartDashboard::PutNumber("!w1 angle ", m_FrontLeft.yawMotor->GetSelectedSensorPosition());
+    frc::SmartDashboard::PutNumber("!w2 angle ", m_FrontRight.yawMotor->GetSelectedSensorPosition());
+    frc::SmartDashboard::PutNumber("!w3 angle ", m_BackLeft.yawMotor->GetSelectedSensorPosition());
+    frc::SmartDashboard::PutNumber("!w4 angle ", m_BackRight.yawMotor->GetSelectedSensorPosition());
+
     double kp_y_fl = drive_debug::kP_fl.GetDouble(0.1f);
     double kp_y_fr = drive_debug::kP_fr.GetDouble(0.1f);
     double kp_y_bl = drive_debug::kP_bl.GetDouble(0.1f);
@@ -81,9 +86,10 @@ void SwerveDrive::Update(frc::Joystick* joy) {
 
     // //BasicPower(joy->GetY() * (float)joy->GetThrottle(), joy->GetX() * (float)joy->GetThrottle());
     double x = joy->GetX();
-
+    frc::SmartDashboard::PutNumber("!x ", x);
     if (abs(x) < 0.05) x = 0;
     double y = -joy->GetY();
+    frc::SmartDashboard::PutNumber("y ", y);
     if (abs(y) < 0.05) y = 0;
 
     double angle = std::atan2(y, x) + PI / 2.0;
@@ -100,6 +106,8 @@ void SwerveDrive::Update(frc::Joystick* joy) {
 
 
     lastAngle = angle;
+    frc::SmartDashboard::PutNumber("!angle ", angle);
+    frc::SmartDashboard::PutNumber("!mag ", mag);
     SetAllTargetAngle(angle);
     SetDriveTargetVelocity(mag);
 
@@ -192,7 +200,8 @@ void SwerveDrive::SetMovement(double speed, double movementDirection, double fac
     { // Wheel 1 (FR)
         double speed = std::sqrt(B * B + C * C);
         double angle = std::atan2(B, C);
-
+        frc::SmartDashboard::PutNumber("!w1 speed ", speed);
+        frc::SmartDashboard::PutNumber("!w1 angle ", angle);
 
         m_FrontRight.driveMotor->Set(ControlMode::Velocity, speed);
         m_FrontRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
@@ -201,8 +210,9 @@ void SwerveDrive::SetMovement(double speed, double movementDirection, double fac
     { // Wheel 2 (FL)
         double speed = std::sqrt(B * B + D * D);
         double angle = std::atan2(B, D);
-
-
+        frc::SmartDashboard::PutNumber("!w3 speed ", speed);
+        frc::SmartDashboard::PutNumber("!w3 angle ", angle);
+        
         m_FrontLeft.driveMotor->Set(ControlMode::Velocity, speed);
         m_FrontLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
     }
@@ -210,7 +220,8 @@ void SwerveDrive::SetMovement(double speed, double movementDirection, double fac
     { // Wheel 3 (BL)
         double speed = std::sqrt(A * A + D * D);
         double angle = std::atan2(A, D);
-
+        frc::SmartDashboard::PutNumber("!w3 speed ", speed);
+        frc::SmartDashboard::PutNumber("!w3 angle ", angle);
 
         m_BackLeft.driveMotor->Set(ControlMode::Velocity, speed);
         m_BackLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
@@ -219,8 +230,9 @@ void SwerveDrive::SetMovement(double speed, double movementDirection, double fac
     { // Wheel 4 (BR)
         double speed = std::sqrt(A * A + C * C);
         double angle = std::atan2(A, C);
-
-
+        frc::SmartDashboard::PutNumber("!w4 speed ", speed);
+        frc::SmartDashboard::PutNumber("!w4 angle ", angle);
+        
         m_BackRight.driveMotor->Set(ControlMode::Velocity, speed);
         m_BackRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
     }
@@ -292,11 +304,26 @@ void SwerveDrive::SetAllTargetAngle(double angle) {
 }
 
 void SwerveDrive::SetDriveTargetVelocity(double speed) {
-    double targetPosition = speed * TICKS_PER_ROTATION_FALCON * FALCON_UPDATE_PER_SECOND;
+    double targetPosition = speed * TICKS_PER_ROTATION_FALCON * 2; //* FALCON_UPDATE_PER_SECOND
+    frc::SmartDashboard::PutNumber("!targetvelo", targetPosition);
+    // m_FrontLeft.driveMotor->Set(ControlMode::PercentOutput, .5);
 
     m_FrontLeft.driveMotor->Set(ControlMode::Velocity, targetPosition);
     m_FrontRight.driveMotor->Set(ControlMode::Velocity, targetPosition);
     m_BackLeft.driveMotor->Set(ControlMode::Velocity, targetPosition);
     m_BackRight.driveMotor->Set(ControlMode::Velocity, targetPosition);
+
+    
+
+    // m_FrontLeft.driveMotor->Set(ControlMode::Velocity, 2048);
+    // m_FrontRight.driveMotor->Set(ControlMode::Velocity, 2048);
+    // m_BackLeft.driveMotor->Set(ControlMode::Velocity, 2048);
+    // m_BackRight.driveMotor->Set(ControlMode::Velocity, 2048);
+    
+    // double targetSpeed = speed * (1 / 1.4142135623730950488016887242097);
+    // m_FrontLeft.driveMotor->Set(ControlMode::PercentOutput, targetSpeed);
+    // m_FrontRight.driveMotor->Set(ControlMode::PercentOutput, targetSpeed);
+    // m_BackLeft.driveMotor->Set(ControlMode::PercentOutput, targetSpeed);
+    // m_BackRight.driveMotor->Set(ControlMode::PercentOutput, targetSpeed);
 
 }
