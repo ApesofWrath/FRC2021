@@ -29,6 +29,7 @@ void ShooterSubsystem::Periodic(){
     // m_shooter->belt_PID->SetReference(0, rev::ControlType::kVelocity); 
     // m_shooter->belt_spark->Set(0);
     // }
+    m_shooter->right_indexer_spark->Set(.5);
     frc::SmartDashboard::PutNumber("!shootertopwwheel ", m_shooter->top_wheel_encoder->GetVelocity());
     frc::SmartDashboard::PutNumber("!shooterbotwheeel ", m_shooter->bottom_wheel_encoder->GetVelocity());
     frc::SmartDashboard::PutNumber("!shooterbelt ", m_shooter->belt_encoder->GetVelocity());

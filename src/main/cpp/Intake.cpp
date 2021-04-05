@@ -14,7 +14,7 @@
 Intake::Intake() {
 
 //  talonIntake = new TalonSRX(0);
-intakeSparkM0 = new rev::CANSparkMax(intakeWheelSpark, rev::CANSparkMax::MotorType::kBrushless);
+intakeSparkM0 = new rev::CANSparkMax(22, rev::CANSparkMax::MotorType::kBrushless);
 
 }
 

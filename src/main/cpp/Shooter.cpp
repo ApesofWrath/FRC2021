@@ -3,18 +3,24 @@
     
 
     Shooter::Shooter() {
+        
+        // talon1 = new TalonFX(11);
+        // ConfigureTalon(talon1, 0, 0, 10, false, 0.10976, 0.221, 0, 0, ctre::phoenix::motorcontrol::NeutralMode::Coast);
+        
         shooter_state = INIT_STATE;
 
-        right_indexer_spark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
-        left_indexer_spark = new rev::CANSparkMax(0, rev::CANSparkMax::MotorType::kBrushless);
+        right_indexer_spark = new rev::CANSparkMax(9, rev::CANSparkMax::MotorType::kBrushless);
+        left_indexer_spark = new rev::CANSparkMax(12, rev::CANSparkMax::MotorType::kBrushless);
 
         belt_spark = new rev::CANSparkMax(27, rev::CANSparkMax::MotorType::kBrushless);
 
         top_wheel_spark = new rev::CANSparkMax(28, rev::CANSparkMax::MotorType::kBrushless);
         bottom_wheel_spark = new rev::CANSparkMax(29, rev::CANSparkMax::MotorType::kBrushless);
 
+
         // ConfigureTalon(top_wheel_spark,       0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
         // ConfigureTalon(bottom_wheel_spark,    0, 0, 10, false, 0, 0, 0, 0, NeutralMode::Brake);
+
 
         belt_PID = new rev::CANPIDController(belt_spark->GetPIDController());
         belt_encoder = new rev::CANEncoder(belt_spark->GetEncoder());
@@ -59,7 +65,7 @@
 
         bottom_wheel_encoder->SetPosition(0);
         bottom_wheel_PID->SetReference(0, rev::ControlType::kPosition);
-        // left_indexer_spark->Follow(*right_indexer_spark, true);
+        left_indexer_spark->Follow(*right_indexer_spark, true);
     }
 
     void Shooter::ShooterStateMachine(){
@@ -133,11 +139,16 @@
 
         // belt_PID->SetReference(-5650, rev::ControlType::kVelocity); 
         // belt_spark->Set(-.96);
+        // talon1->Set(ControlMode::Velocity, 682);
+        // talon1->Set(ControlMode::PercentOutput, .1);
 
         // right_indexer_PID->SetReference(indexer_shoot_speed, rev::ControlType::kVelocity);
     }
 
     void Shooter::MediumShoot() {
+        // talon1->Set(ControlMode::Velocity, 0);
+        // talon1->Set(ControlMode::PercentOutput, 0);
+
         // top_wheel_spark->Set(ControlMode::Velocity, top_shoot_speed * medium_modifier); // need to config, when get testing equip 
         // bottom_wheel_spark->Set(ControlMode::Velocity, bottom_shoot_speed * medium_modifier); 
         // belt_PID->SetReference(belt_speed, rev::ControlType::kVelocity); 
@@ -170,12 +181,12 @@
     }
 
     void Shooter::Stop() {
-        right_indexer_spark->Set(0);
+        right_indexer_spark->Set(0.2);
         // top_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
         // bottom_wheel_spark->Set(ControlMode::PercentOutput, 0.0);
-        top_wheel_spark->Set(0);
-        bottom_wheel_spark->Set(0);
-        belt_spark->Set(0);
+        // top_wheel_spark->Set(0);
+        // bottom_wheel_spark->Set(0);
+        // belt_spark->Set(0);
     }
 
     void Shooter::Waiting() { 
@@ -195,6 +206,7 @@
     void Shooter::ConfigureSpark(rev::CANSparkMax *spark, rev::CANPIDController *PIDController, 
         double kP, double kI, double kD, double kIz, double kFF, double minOut, 
         double maxOut, rev::CANSparkMax::IdleMode idleMode) {
+        
         PIDController->SetP(kP);
         PIDController->SetI(kI);
         PIDController->SetD(kD);
@@ -207,15 +219,23 @@
         spark->BurnFlash();
     }
 
-    void Shooter::ConfigureTalon(WPI_TalonFX *talon, int pidSlot, int pidType, int timeoutMs, bool inverted,  
+    void Shooter::ConfigureTalon(TalonFX *talon, int pidSlot, int pidType, int timeoutMs, bool inverted,  
         int kF, int kP, int kI, int kD, NeutralMode brakeMode) {
         talon->ConfigFactoryDefault();
+        
+        talon->ConfigSelectedFeedbackSensor(FeedbackDevice::IntegratedSensor, 0, 10);
+
         talon->SetInverted(inverted);
         talon->Config_kF(pidSlot, kF, timeoutMs);
         talon->Config_kP(pidSlot, kP, timeoutMs);
         talon->Config_kI(pidSlot, kI, timeoutMs);
         talon->Config_kD(pidSlot, kD, timeoutMs);
         talon->SetNeutralMode(brakeMode);
+
+        talon->ConfigNominalOutputForward(0);
+        talon->ConfigNominalOutputReverse(0);
+        talon->ConfigPeakOutputForward(1);
+        talon->ConfigPeakOutputReverse(-1);
 
         talon->SetSelectedSensorPosition(0, pidType, timeoutMs);
     }

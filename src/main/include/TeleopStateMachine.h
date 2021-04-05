@@ -14,7 +14,7 @@
 using namespace frc;
 
 namespace ButtonIDs {
-    const int WAIT_FOR_BUTTON                    = 5,//13 < change back to 13
+    const int WAIT_FOR_BUTTON                    = 13, //13 < change back to 13
               LOWER_INTAKE_BUTTON                = 8,
               INTAKE_OUT_BUTTON                  = 2,
               SHOOT_BUTTON                       = 3,
