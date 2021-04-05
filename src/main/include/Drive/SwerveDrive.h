@@ -49,6 +49,7 @@ public:
 
     void SetAllTargetAngle(double angle);
     void SetDriveTargetVelocity(double speed);
+    void SetDriveTargetDistance(double distance);
 
     inline double GetCurrentTargetYawPosition() { return m_CurrentTargetYawPosition; };
 

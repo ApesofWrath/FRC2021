@@ -35,11 +35,12 @@ void Robot::RobotInit() {
   m_Joy = new frc::Joystick(0);
 
 //   std::cout << "dc\n";
-//   drive = new DriveController();
-//   shooter = new Shooter();
-//   arm = new Arm();
-//   intake = new Intake();
-//   controlpanel = new ControlPanel();
+  
+  // drive = new DriveController();
+  shooter = new Shooter();
+  arm = new Arm();
+  intake = new Intake();
+  controlpanel = new ControlPanel();
 
 //   std::cout << "robo_init\n";
 //   a_drive = new AutonDrive(drive, drive->ahrs);
@@ -160,7 +161,7 @@ void Robot::TeleopInit() {
   
   }
   frc2::CommandScheduler::GetInstance().Enable(); // enable me for command based 
-  drive->ResetConfigs();
+  // drive->ResetConfigs();
 
   frc::Shuffleboard::SelectTab("Drive");
 
@@ -168,7 +169,7 @@ void Robot::TeleopInit() {
 }
 void Robot::TeleopPeriodic() {
   m_SwerveDrive->Update(m_Joy);
-  drive->RunTeleopDrive(JoyThrottle, JoyWheel, true, false, false);
+  // drive->RunTeleopDrive(JoyThrottle, JoyWheel, true, false, false);
   tsm->StateMachine(tsm->GatherButtonDataFromJoysticks(
     JoyThrottle, JoyWheel, JoyOp));
 

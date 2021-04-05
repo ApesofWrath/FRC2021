@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-AutonDrive::AutonDrive(DriveBase* driveb, AHRS* ahrs_)
+AutonDrive::AutonDrive(SwerveDrive* swerve, AHRS* ahrs_)
 {
 
     std::cout << "AutoDrive start init\n";

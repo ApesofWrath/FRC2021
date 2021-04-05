@@ -285,3 +285,17 @@ void SwerveDrive::SetDriveTargetVelocity(double speed) {
     m_BackRight.driveMotor->Set(ControlMode::Velocity, targetPosition);
 
 }
+
+void SwerveDrive::SetDriveTargetDistance(double distance) { //distance is in meters
+    double targetPosition = distance * (TICKS_PER_ROTATION_FALCON) * (SWERVE_MOD_DRIVE_RATIO) / (METER_TO_INCHES / WHEEL_CIRCUMFERENCE) ;
+    
+    m_FrontLeft.driveMotor->Set(ControlMode::Position, targetPosition + m_FrontLeft.driveMotor->GetSelectedSensorPosition());
+    m_FrontRight.driveMotor->Set(ControlMode::Position, targetPosition + m_FrontRight.driveMotor->GetSelectedSensorPosition());
+    m_BackLeft.driveMotor->Set(ControlMode::Position, targetPosition + m_BackLeft.driveMotor->GetSelectedSensorPosition());
+    m_BackRight.driveMotor->Set(ControlMode::Position, targetPosition + m_BackRight.driveMotor->GetSelectedSensorPosition());
+
+}
+// 2048 * 7.39 = 4pi inches
+// 4pi inches = 0.319185813494 meters (divide it by 39.3701)
+// 7.39:1 drive 1 rot of wheel
+// 4pi inches for one rot of wheel 

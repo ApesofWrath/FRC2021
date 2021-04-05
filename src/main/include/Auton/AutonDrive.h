@@ -11,18 +11,20 @@
 #include "../Drive/DriveConstants.h"
 #include <ctre/Phoenix.h>
 #include <frc2/command/SubsystemBase.h>
+#include "../Drive/SwerveDrive.h"
 
 class AutonDrive : public frc2::SubsystemBase {
 public:
-    AutonDrive(DriveBase* driveb, AHRS* ahrs_);
+    AutonDrive(SwerveDrive* swerve, AHRS* ahrs_);
 
     AHRS* ahrs;
     frc::PowerDistributionPanel *pdp;
 
-    WPI_TalonFX *t_left1, *t_left2, *t_right1, *t_right2;
+    TalonFX *front_left_drive, *front_right_drive, *back_left_drive, *back_right_drive,
+        *front_left_yaw, *front_right_yaw, *back_left_yaw, *back_right_yaw;
 
-    frc::SpeedControllerGroup *m_leftMotors;
-    frc::SpeedControllerGroup *m_rightMotors;
+    // frc::SpeedControllerGroup *m_leftMotors; // do we still need this?
+    // frc::SpeedControllerGroup *m_rightMotors;
 
     frc::DifferentialDriveOdometry *m_odometry;
 
