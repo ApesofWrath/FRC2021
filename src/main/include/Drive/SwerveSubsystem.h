@@ -22,7 +22,7 @@ class SwerveSubsystem : public frc2::SubsystemBase {
     void SetAllTargetAngle(double angle);
     void SetDriveTargetVelocity(double speed);
 
-    inline double GetCurrentTargetYawPosition() {return m_current_target_yaw_pos; };
+    std::vector<double> GetCurrentPositions();
 
     private:
     
