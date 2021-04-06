@@ -73,17 +73,17 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 end,
                 *config);
             ramseteCommand = new frc2::RamseteCommand(
-                trajectory, [this]() { return m_drive->GetPose(); },
+                trajectory, [this]() { return m_swerve_subsystem->GetPose(); },
                 frc::RamseteController(K_RAMSETE_B,
                                         K_RAMSETE_ZETA),
                 frc::SimpleMotorFeedforward<units::meters>(
                     K_S, K_V, K_A),
                 K_DRIVE_KINEMATICS,
-                [this] { return m_drive->GetWheelSpeeds(); },
+                [this] { return m_swerve_subsystem->GetWheelSpeeds(); },
                 frc2::PIDController(K_P_LEFT_VEL, 0, 0),
                 frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
-                [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
-                {m_drive});
+                [this](auto left, auto right) { m_swerve_subsystem->TankDriveVolts(left, right); },
+                {m_swerve_subsystem});
             m_drive->ResetOdometry(start);
             return new frc2::SequentialCommandGroup(
                 std::move(*ramseteCommand),

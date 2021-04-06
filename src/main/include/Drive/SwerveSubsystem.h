@@ -25,15 +25,26 @@ class SwerveSubsystem : public frc2::SubsystemBase {
 
     void SetAllTargetAngle(double angle);
     void SetDriveTargetVelocity(double speed);
+
+    // use _t after the desired unit or else it wont like you
+    const units::meter_t x_offset = 11_in;
+    const units::meter_t y_offset = 11.033_in;
+    
+    frc::Rotation2d GetHeading() {
+        return frc::Rotation2d((units::degree_t) (std::remainder(-m_ahrs->GetAngle(), 360)));
+    };
+
+    frc::Translation2d m_front_left_location {-x_offset, y_offset}; // (x, y) -> (-11, -11.033)
+    frc::Translation2d m_front_right_location {x_offset, y_offset}; 
+    frc::Translation2d m_back_left_location {-x_offset, -y_offset}; 
+    frc::Translation2d m_back_right_location {x_offset, -y_offset}; 
+
+    frc::SwerveDriveKinematics<4> *m_kinematics;
+    frc::SwerveDriveOdometry<4> *m_odometry {m_kinematics, GetHeading(), frc::Pose2d()};
     AHRS *m_ahrs;
-    frc::SwerveDriveOdometry<4> *m_odometry;
 
-    double x_offset = -11 * INCHES_TO_METER;
-    const units::meter x_offset = -11_m * INCHES_TO_METER;
+    frc::Pose2d m_this_is_pose;
 
-    frc::Translation2d m_frontLeftLocation{-0.2794_m, 0.381_m}; // (x, y) -> (-11, -11.033)
-
-    double GetHeading();
     double GetTurnRate();
     frc::Pose2d GetPose(); 
  
