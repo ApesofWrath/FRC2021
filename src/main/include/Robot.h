@@ -30,7 +30,7 @@ class Robot : public frc::TimedRobot {
  private:
 
   SwerveDrive* m_SwerveDrive;
-  frc::Joystick* m_Joy;
+  frc::Joystick* m_Joy, *m_JoyWheel;
 
 };
 

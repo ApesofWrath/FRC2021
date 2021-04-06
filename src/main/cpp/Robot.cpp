@@ -33,6 +33,7 @@ void Robot::RobotInit() {
 
   m_SwerveDrive = new SwerveDrive({0, 4}, {1, 5}, {2, 6}, {3, 7});
   m_Joy = new frc::Joystick(0);
+  m_JoyWheel = new frc::Joystick(1);
 
 //   std::cout << "dc\n";
 //   drive = new DriveController();
@@ -177,7 +178,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
 
-  m_SwerveDrive->Update(m_Joy);
+  m_SwerveDrive->Update(m_Joy, m_JoyWheel);
 
   
 
