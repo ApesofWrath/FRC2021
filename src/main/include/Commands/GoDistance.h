@@ -19,7 +19,7 @@ class GoDistanceCommand : public frc2::CommandHelper<frc2::CommandBase, GoDistan
 
     bool IsFinished() override;
     
-    std::vector<double> m_start;
+    std::array<double, 4> m_start;
 
     double front_left_pos;
     double front_right_pos;

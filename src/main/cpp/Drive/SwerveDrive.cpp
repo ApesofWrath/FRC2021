@@ -301,7 +301,7 @@ void SwerveDrive::SetDriveTargetDistance(double distance) { //distance is in met
 // 7.39:1 drive 1 rot of wheel
 // 4pi inches for one rot of wheel 
 
-std::vector<double> SwerveDrive::GetAllDrivePositions(){
+std::array<double, 4> SwerveDrive::GetAllDrivePositions(){
 
     // std::vector<double> 
 

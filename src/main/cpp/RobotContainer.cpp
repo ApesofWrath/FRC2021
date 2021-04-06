@@ -7,13 +7,11 @@
 #include <iostream>
 #include <vector>
 
-RobotContainer::RobotContainer(AutonDrive* drive, Shooter* shooter, Arm* arm, Intake* intake) {
-    m_drive = drive;
+RobotContainer::RobotContainer(Shooter* shooter, Arm* arm, Intake* intake, SwerveDrive swerve, SwerveSubsystem swerve_subsystem) {
     m_shooter = shooter;
     m_arm = arm;
     m_intake = intake;
-    m_joystick;
-    m_shooter_subsystem = new ShooterSubsystem(m_shooter);
+    m_shooter_subsystem = new ShooterSubsystem(m_shooter, m_joystick);
 
     frc2::CommandScheduler::GetInstance().OnCommandInitialize(
       [](const frc2::Command& command) {

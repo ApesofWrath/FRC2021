@@ -30,6 +30,7 @@
 #include "Arm.h"
 #include "Intake.h"
 #include "ShooterSubsystem.h"
+#include "Drive/SwerveSubsystem.h"
 
 #include "Commands/ShootLow.h"
 #include "Commands/ShootHigh.h"
@@ -55,14 +56,16 @@ enum Auto {
  */
 class RobotContainer {
  public:
-  RobotContainer(AutonDrive* drive, Shooter* shooter, Arm* arm, Intake* intake);
+  RobotContainer(Shooter* shooter, Arm* arm, Intake* intake, SwerveDrive swerve, SwerveSubsystem swerve_subsystem);
 
-  AutonDrive* m_drive;
+  // AutonDrive* m_drive;
   Shooter* m_shooter;
   Arm* m_arm;
   Intake* m_intake;
   frc::Joystick* m_joystick;
-  ShooterSubsystem* m_shooter_subsystem;
+  SwerveDrive *m_swerve;
+  ShooterSubsystem *m_shooter_subsystem;
+  SwerveSubsystem *m_swerve_subsystem; 
 
   void InitAutoChoices();
 

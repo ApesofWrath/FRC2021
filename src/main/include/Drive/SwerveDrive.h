@@ -2,6 +2,7 @@
 #include "Drive/DriveConstants.h"
 #include <frc/Joystick.h>
 #include <ctre/Phoenix.h>
+#include <array>
 
 #include "AHRS.h"
 
@@ -55,7 +56,7 @@ public:
 
     void SetMovement(double speed, double movementDirection, double facing);
 
-    std::vector<double> GetAllDrivePositions(){
+    std::array<double, 4> GetAllDrivePositions(){
 
     }
 };
