@@ -6,11 +6,25 @@
 #include <frc/kinematics/DifferentialDriveOdometry.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
 #include <units/units.h>
+#include <iostream>
+#include <frc/Joystick.h>
+#include "ctre/Phoenix.h"
+#include "AHRS.h"
+#include <thread>
+#include <chrono>
+#include <cmath>
+#include <stdio.h>
+#include <stdlib.h>
+#include <cstdlib>
+#include <frc/Timer.h>
+#include <vector>
+#include <list>
+#include <frc/PWMTalonFx.h>
 
 class SwerveSubsystem : public frc2::SubsystemBase {
     public: 
 
-    SwerveSubsystem(SwerveDrive *swerve, frc::Joystick *joyOp, AHRS *ahrs);
+    SwerveSubsystem(SwerveDrive *swerve, frc::Joystick *joyOp);
 
     void Periodic() override; //runs regardless of state
     
@@ -30,23 +44,24 @@ class SwerveSubsystem : public frc2::SubsystemBase {
     const units::meter_t x_offset = 11_in;
     const units::meter_t y_offset = 11.033_in;
     
-    frc::Rotation2d GetHeading() {
-        return frc::Rotation2d((units::degree_t) (std::remainder(-m_ahrs->GetAngle(), 360)));
-    };
+    frc::Rotation2d GetHeading();
 
     frc::Translation2d m_front_left_location {-x_offset, y_offset}; // (x, y) -> (-11, -11.033)
     frc::Translation2d m_front_right_location {x_offset, y_offset}; 
     frc::Translation2d m_back_left_location {-x_offset, -y_offset}; 
     frc::Translation2d m_back_right_location {x_offset, -y_offset}; 
 
-    frc::SwerveDriveKinematics<4> *m_kinematics;
-    frc::SwerveDriveOdometry<4> *m_odometry {m_kinematics, GetHeading(), frc::Pose2d()};
+    const frc::SwerveDriveKinematics<4> m_kinematics {
+        m_front_left_location, m_front_right_location, 
+        m_back_left_location, m_back_right_location
+    };
+    frc::SwerveDriveOdometry<4> *m_odometry;
     AHRS *m_ahrs;
 
-    frc::Pose2d m_this_is_pose;
 
     double GetTurnRate();
-    frc::Pose2d GetPose(); 
+    frc::Pose2d GetPose();
+    void BuildOdometry(frc::Pose2d pose); 
  
     std::array<double, 4> GetCurrentPositions();
 

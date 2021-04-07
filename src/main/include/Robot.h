@@ -44,7 +44,7 @@ class Robot : public frc::TimedRobot {
 
   ControlPanel* controlpanel; 
 
-  DriveController* drive;
+  // DriveController* drive;
 
 //Temporary Button ids
   const int BUTTON_STOP = 2, POSITION_BUTTON = 5, ROTATION_BUTTON = 4, INTAKE = 3;
@@ -54,7 +54,6 @@ class Robot : public frc::TimedRobot {
 
   Arm* arm;
   Intake* intake;
-  // TalonSRX* talon0;
   Shooter* shooter, speed;
 
   TeleopStateMachine *tsm;
@@ -76,6 +75,9 @@ class Robot : public frc::TimedRobot {
 
   SwerveDrive* m_SwerveDrive;
   frc::Joystick* m_Joy;
+
+  frc2::Command *m_autonomousCommand = nullptr;
+  RobotContainer *m_container;
 
 };
 

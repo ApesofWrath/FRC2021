@@ -17,6 +17,8 @@
 #include <frc/trajectory/TrajectoryConfig.h>
 #include <frc/trajectory/Trajectory.h>
 #include <frc2/command/RamseteCommand.h>
+#include <frc2/command/SwerveControllerCommand.h>
+#include <frc/PIDController.h>
 #include <frc2/command/Command.h>
 
 #include "Drive/DriveBase.h"
@@ -56,7 +58,7 @@ enum Auto {
  */
 class RobotContainer {
  public:
-  RobotContainer(Shooter* shooter, Arm* arm, Intake* intake, SwerveDrive swerve, SwerveSubsystem swerve_subsystem);
+  RobotContainer(Shooter* shooter, Arm* arm, Intake* intake, SwerveDrive *swerve);
 
   // AutonDrive* m_drive;
   Shooter* m_shooter;
@@ -74,6 +76,7 @@ class RobotContainer {
   
   Auto m_autoSelected;
 
+  frc::TrajectoryConfig *config;
 
  private:
   void ConfigureButtonBindings();

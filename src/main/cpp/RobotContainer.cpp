@@ -7,11 +7,12 @@
 #include <iostream>
 #include <vector>
 
-RobotContainer::RobotContainer(Shooter* shooter, Arm* arm, Intake* intake, SwerveDrive swerve, SwerveSubsystem swerve_subsystem) {
+RobotContainer::RobotContainer(Shooter* shooter, Arm* arm, Intake* intake, SwerveDrive *swerve) {
     m_shooter = shooter;
     m_arm = arm;
     m_intake = intake;
     m_shooter_subsystem = new ShooterSubsystem(m_shooter, m_joystick);
+    m_swerve_subsystem = new SwerveSubsystem(m_swerve, m_joystick);
 
     frc2::CommandScheduler::GetInstance().OnCommandInitialize(
       [](const frc2::Command& command) {
@@ -34,15 +35,17 @@ const frc::DifferentialDriveKinematics K_DRIVE_KINEMATICS{
 frc2::Command* RobotContainer::GetAutonomousCommand() {
 
     // Setup
-    frc::DifferentialDriveVoltageConstraint *autoVoltageConstraint = new frc::DifferentialDriveVoltageConstraint(
-      frc::SimpleMotorFeedforward<units::meter>(
-          K_S, K_V, K_A),
-      K_DRIVE_KINEMATICS, units::volt_t(10));
+    // frc::SwerveDriveKinematicsConstraint *swerve_constraints = new 
+
+    // frc::DifferentialDriveVoltageConstraint *autoVoltageConstraint = new frc::DifferentialDriveVoltageConstraint(
+    //   frc::SimpleMotorFeedforward<units::meter>(
+    //       K_S, K_V, K_A),
+    //   K_DRIVE_KINEMATICS, units::volt_t(10));
 
     frc::TrajectoryConfig *config = new frc::TrajectoryConfig(units::meters_per_second_t(2),
                                 units::meters_per_second_squared_t(3));
     config->SetKinematics(K_DRIVE_KINEMATICS);
-    config->AddConstraint(*autoVoltageConstraint);
+    // config->AddConstraint(*autoVoltageConstraint);
 
     // Pathweaver load    NOT YET
     // wpi::SmallString<64> deployDirectory;
@@ -58,7 +61,9 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
     std::vector<frc::Translation2d> points;
 
     frc::Trajectory trajectory, trajectory1, trajectory2, trajectoryTurn;
-    frc2::RamseteCommand *ramseteCommand, *ramseteCommand2, *ramseteCommandTurn;
+    const frc::TrapezoidProfile<units::radians>::Constraints
+        kThetaControllerConstraints{units::radians_per_second_t(3.142), units::meters_per_second_squared_t(4.5)};
+    frc2::SwerveControllerCommand *ramseteCommand, *ramseteCommand2, *ramseteCommandTurn;
 
     switch (m_autoSelected) {
         case CROSS_INIT_LINE:
@@ -72,139 +77,136 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 points,
                 end,
                 *config);
-            ramseteCommand = new frc2::RamseteCommand(
+            ramseteCommand = new frc2::SwerveControllerCommand(
                 trajectory, [this]() { return m_swerve_subsystem->GetPose(); },
-                frc::RamseteController(K_RAMSETE_B,
-                                        K_RAMSETE_ZETA),
+                m_swerve_subsystem->m_kinematics,
                 frc::SimpleMotorFeedforward<units::meters>(
                     K_S, K_V, K_A),
                 K_DRIVE_KINEMATICS,
-                [this] { return m_swerve_subsystem->GetWheelSpeeds(); },
                 frc2::PIDController(K_P_LEFT_VEL, 0, 0),
                 frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
-                [this](auto left, auto right) { m_swerve_subsystem->TankDriveVolts(left, right); },
-                {m_swerve_subsystem});
-            m_drive->ResetOdometry(start);
+                frc::ProfiledPIDController<units::meter_t>(0, 0, 0, config));
+            m_swerve_subsystem->BuildOdometry(start);
             return new frc2::SequentialCommandGroup(
                 std::move(*ramseteCommand),
-                frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {})
+                // frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {})
             );
         break;
 
-        case SHOOT_PRELOAD:
-            std::cout << "sp\n";
-            start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-            end = frc::Pose2d(-3.048_m, 0_m, frc::Rotation2d(0_deg));
-            points = {
-            };
-            config->SetReversed(true);
-            std::cout << "sp2\n";
-            trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-                start,
-                points,
-                end,
-                *config);
-            ramseteCommand = new frc2::RamseteCommand(
-                trajectory, [this]() { return m_drive->GetPose(); },
-                frc::RamseteController(K_RAMSETE_B,
-                                        K_RAMSETE_ZETA),
-                frc::SimpleMotorFeedforward<units::meters>(
-                    K_S, K_V, K_A),
-                K_DRIVE_KINEMATICS,
-                [this] { return m_drive->GetWheelSpeeds(); },
-                frc2::PIDController(K_P_LEFT_VEL, 0, 0),
-                frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
-                [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
-                {m_drive});
-            m_drive->ResetOdometry(start);  
-            return new frc2::SequentialCommandGroup(
-                std::move(*ramseteCommand),
-                frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
-                frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->FAR_SHOOT_STATE;}),
-                frc2::WaitCommand(1.5_s),
-                frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->STOP_STATE;})
-            );
-        case FIVE_BALL:
-            start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-            trajectory1 = frc::TrajectoryGenerator::GenerateTrajectory(
-                start,
-                {},
-                frc::Pose2d(2.67_m, 0_m, frc::Rotation2d(0_deg)),
-                *config
-            );
-            trajectoryTurn = frc::TrajectoryGenerator::GenerateTrajectory(
-                frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
-                {},
-                frc::Pose2d(0_m, -0.01_m, frc::Rotation2d(-30_deg)),
-                *config
-            );
-            config->SetReversed(true);
-            trajectory2 = frc::TrajectoryGenerator::GenerateTrajectory(
-                frc::Pose2d(2.67_m, 0_m, frc::Rotation2d(0_deg)),
-                {},
-                frc::Pose2d(-3.048_m, 5.08_m, frc::Rotation2d(0_deg)),
-                *config
-            );
+        // case SHOOT_PRELOAD:
+        //     std::cout << "sp\n";
+        //     start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
+        //     end = frc::Pose2d(-3.048_m, 0_m, frc::Rotation2d(0_deg));
+        //     points = {
+        //     };
+        //     config->SetReversed(true);
+        //     std::cout << "sp2\n";
+        //     trajectory = frc::TrajectoryGenerator::GenerateTrajectory(
+        //         start,
+        //         points,
+        //         end,
+        //         *config);
+        //     ramseteCommand = new frc2::RamseteCommand(
+        //         trajectory, [this]() { return m_drive->GetPose(); },
+        //         frc::RamseteController(K_RAMSETE_B,
+        //                                 K_RAMSETE_ZETA),
+        //         frc::SimpleMotorFeedforward<units::meters>(
+        //             K_S, K_V, K_A),
+        //         K_DRIVE_KINEMATICS,
+        //         [this] { return m_drive->GetWheelSpeeds(); },
+        //         frc2::PIDController(K_P_LEFT_VEL, 0, 0),
+        //         frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
+        //         [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
+        //         {m_drive});
+        //     m_drive->ResetOdometry(start);  
+        //     return new frc2::SequentialCommandGroup(
+        //         std::move(*ramseteCommand),
+        //         frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
+        //         frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->FAR_SHOOT_STATE;}),
+        //         frc2::WaitCommand(1.5_s),
+        //         frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->STOP_STATE;})
+        //     );
+        // case FIVE_BALL:
+        //     start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
+        //     trajectory1 = frc::TrajectoryGenerator::GenerateTrajectory(
+        //         start,
+        //         {},
+        //         frc::Pose2d(2.67_m, 0_m, frc::Rotation2d(0_deg)),
+        //         *config
+        //     );
+        //     trajectoryTurn = frc::TrajectoryGenerator::GenerateTrajectory(
+        //         frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg)),
+        //         {},
+        //         frc::Pose2d(0_m, -0.01_m, frc::Rotation2d(-30_deg)),
+        //         *config
+        //     );
+        //     config->SetReversed(true);
+        //     trajectory2 = frc::TrajectoryGenerator::GenerateTrajectory(
+        //         frc::Pose2d(2.67_m, 0_m, frc::Rotation2d(0_deg)),
+        //         {},
+        //         frc::Pose2d(-3.048_m, 5.08_m, frc::Rotation2d(0_deg)),
+        //         *config
+        //     );
 
-            m_drive->ResetOdometry(start);
+        //     m_drive->ResetOdometry(start);
 
-            ramseteCommand = new frc2::RamseteCommand(
-                trajectory1, [this]() { return m_drive->GetPose(); },
-                frc::RamseteController(K_RAMSETE_B,
-                                        K_RAMSETE_ZETA),
-                frc::SimpleMotorFeedforward<units::meters>(
-                    K_S, K_V, K_A),
-                K_DRIVE_KINEMATICS,
-                [this] { return m_drive->GetWheelSpeeds(); },
-                frc2::PIDController(K_P_LEFT_VEL, 0, 0),
-                frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
-                [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
-                {m_drive});
-            ramseteCommandTurn = new frc2::RamseteCommand(
-                trajectoryTurn, [this]() { return m_drive->GetPose(); },
-                frc::RamseteController(K_RAMSETE_B,
-                                        K_RAMSETE_ZETA),
-                frc::SimpleMotorFeedforward<units::meters>(
-                    K_S, K_V, K_A),
-                K_DRIVE_KINEMATICS,
-                [this] { return m_drive->GetWheelSpeeds(); },
-                frc2::PIDController(K_P_LEFT_VEL, 0, 0),
-                frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
-                [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
-                {m_drive});
-            ramseteCommand2 = new frc2::RamseteCommand(
-                trajectory2, [this]() { return m_drive->GetPose(); },
-                frc::RamseteController(K_RAMSETE_B,
-                                        K_RAMSETE_ZETA),
-                frc::SimpleMotorFeedforward<units::meters>(
-                    K_S, K_V, K_A),
-                K_DRIVE_KINEMATICS,
-                [this] { return m_drive->GetWheelSpeeds(); },
-                frc2::PIDController(K_P_LEFT_VEL, 0, 0),
-                frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
-                [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
-                {m_drive});
-            return new frc2::SequentialCommandGroup(
-                frc2::InstantCommand([this] {
-                    m_arm->intake_arm_state = m_arm->DOWN_STATE;
-                    m_intake->intake_state = m_intake->IN_STATE;
-                }),
-                std::move(*ramseteCommand),
-                frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
-                std::move(*ramseteCommandTurn),
-                frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
-                frc2::WaitCommand(0.5_s),
-                frc2::InstantCommand([this] {
-                    m_arm->intake_arm_state = m_arm->UP_STATE;
-                    m_intake->intake_state = m_intake->STOP_STATE;
-                }),
-                std::move(*ramseteCommand2),
-                frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
-                frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->FAR_SHOOT_STATE;}),
-                frc2::WaitCommand(1.5_s),
-                frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->STOP_STATE;})
-            );  
-        break;
+        //     ramseteCommand = new frc2::RamseteCommand(
+        //         trajectory1, [this]() { return m_drive->GetPose(); },
+        //         frc::RamseteController(K_RAMSETE_B,
+        //                                 K_RAMSETE_ZETA),
+        //         frc::SimpleMotorFeedforward<units::meters>(
+        //             K_S, K_V, K_A),
+        //         K_DRIVE_KINEMATICS,
+        //         [this] { return m_drive->GetWheelSpeeds(); },
+        //         frc2::PIDController(K_P_LEFT_VEL, 0, 0),
+        //         frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
+        //         [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
+        //         {m_drive});
+        //     ramseteCommandTurn = new frc2::RamseteCommand(
+        //         trajectoryTurn, [this]() { return m_drive->GetPose(); },
+        //         frc::RamseteController(K_RAMSETE_B,
+        //                                 K_RAMSETE_ZETA),
+        //         frc::SimpleMotorFeedforward<units::meters>(
+        //             K_S, K_V, K_A),
+        //         K_DRIVE_KINEMATICS,
+        //         [this] { return m_drive->GetWheelSpeeds(); },
+        //         frc2::PIDController(K_P_LEFT_VEL, 0, 0),
+        //         frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
+        //         [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
+        //         {m_drive});
+        //     ramseteCommand2 = new frc2::RamseteCommand(
+        //         trajectory2, [this]() { return m_drive->GetPose(); },
+        //         frc::RamseteController(K_RAMSETE_B,
+        //                                 K_RAMSETE_ZETA),
+        //         frc::SimpleMotorFeedforward<units::meters>(
+        //             K_S, K_V, K_A),
+        //         K_DRIVE_KINEMATICS,
+        //         [this] { return m_drive->GetWheelSpeeds(); },
+        //         frc2::PIDController(K_P_LEFT_VEL, 0, 0),
+        //         frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
+        //         [this](auto left, auto right) { m_drive->TankDriveVolts(left, right); },
+        //         {m_drive});
+        //     return new frc2::SequentialCommandGroup(
+        //         frc2::InstantCommand([this] {
+        //             m_arm->intake_arm_state = m_arm->DOWN_STATE;
+        //             m_intake->intake_state = m_intake->IN_STATE;
+        //         }),
+        //         std::move(*ramseteCommand),
+        //         frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
+        //         std::move(*ramseteCommandTurn),
+        //         frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
+        //         frc2::WaitCommand(0.5_s),
+        //         frc2::InstantCommand([this] {
+        //             m_arm->intake_arm_state = m_arm->UP_STATE;
+        //             m_intake->intake_state = m_intake->STOP_STATE;
+        //         }),
+        //         std::move(*ramseteCommand2),
+        //         frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {}),
+        //         frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->FAR_SHOOT_STATE;}),
+        //         frc2::WaitCommand(1.5_s),
+        //         frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->STOP_STATE;})
+        //     );  
+        // break;
         default:
             std::cout << "df\n";
             return new frc2::InstantCommand([this] { frc::SmartDashboard::PutString("status","Why aren't you running auton??");});

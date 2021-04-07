@@ -41,11 +41,11 @@ void Robot::RobotInit() {
   arm = new Arm();
   intake = new Intake();
   controlpanel = new ControlPanel();
+  m_container = new RobotContainer(shooter, arm, intake, m_SwerveDrive);
 
 //   std::cout << "robo_init\n";
 //   a_drive = new AutonDrive(drive, drive->ahrs);
 //   std::cout << "auto init complete\n";
-//   m_container = new RobotContainer(a_drive, shooter, arm, intake);
 //   std::cout << "robo container init complete\n";
   
 // /*   m_descolor_chooser.AddDefault("None",  Colors::WHITE);
@@ -76,14 +76,6 @@ void Robot::RobotInit() {
 // */
 //   JoyThrottle = new frc::Joystick(0);
 //   JoyWheel = new frc::Joystick(1);
-
-  m_descolor_chooser.SetDefaultOption("None",  Colors::WHITE);
-  m_descolor_chooser.AddOption("Red",    Colors::RED);
-  m_descolor_chooser.AddOption("Blue",   Colors::BLUE);
-  m_descolor_chooser.AddOption("Green",  Colors::GREEN);
-  m_descolor_chooser.AddOption("Yellow", Colors::YELLOW);
-
-  frc::SmartDashboard::PutData("Desired Color", &m_descolor_chooser);
 
   cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture("668.camera.server", 0);
 
@@ -177,11 +169,13 @@ void Robot::TeleopPeriodic() {
   frc::SmartDashboard::PutString("Current State", TeleopStateMachine::StateName(tsm->state));
 }
 
-void Robot::UpdateButtons(){
-  
+// void Robot::UpdateButtons(){
+//
 // }
 
-void Robot::TestPeriodic() {}
+// }}
+
+// void Robot::TestPeriodic() {}
 
 
 
