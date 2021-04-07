@@ -56,7 +56,6 @@ public:
 
     void SetMovement(double speed, double movementDirection, double facing);
 
-    std::array<double, 4> GetAllDrivePositions(){
+    std::array<double, 4> GetAllDrivePositions();
 
-    }
 };

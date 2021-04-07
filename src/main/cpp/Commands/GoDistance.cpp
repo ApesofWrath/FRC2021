@@ -18,7 +18,7 @@ void GoDistanceCommand::Initialize(){
 }
 
 void GoDistanceCommand::Execute() {
-    m_swerve_subsystem->GoDistance(m_distance, m_angle);
+    // m_swerve_subsystem->GoDistance(m_distance, m_angle);
 }
 
 void GoDistanceCommand::End(bool interrupted) {

@@ -45,8 +45,8 @@ public:
   const int rightArmSpark = 21; // leader
   const int leftArmSpark = 24; //follower
 
-  const double START_OFFSET = (UP_POSITION / (2 * apes::PI)) * 63;
-  const double DOWN_POS = (DOWN_POSITION / (2 * apes::PI)) * 63;
+  const double START_OFFSET = (UP_POSITION / (2 * PI)) * 63;
+  const double DOWN_POS = (DOWN_POSITION / (2 * PI)) * 63;
 
   void Up();
   void Down();

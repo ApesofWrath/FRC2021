@@ -29,7 +29,7 @@ class GoDistanceCommand : public frc2::CommandHelper<frc2::CommandBase, GoDistan
      double m_distance;
      double m_angle;
 
-    ~GoDistanceCommand() override; // delete me?
+    // ~GoDistanceCommand() override; // delete me?
     // bool ShootHigh();
     private: 
     SwerveSubsystem *m_swerve_subsystem;

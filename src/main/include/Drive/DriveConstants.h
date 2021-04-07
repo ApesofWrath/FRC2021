@@ -6,8 +6,6 @@
 
 #define PRACTICE 0 //0 uses the consts on the bottom //comp gains work ok on practice bot too
 
-#define PI 3.1415926535897932
-
 // #define SWERVE_DRIVE
 
 
@@ -110,7 +108,7 @@ const double MAX_JERK_VIS = 10000.0;
 
 const double MAX_FORWARD_MPS = 4.89154;
 
-const double MAX_Y_RPM = MAX_FORWARD_MPS / ((2 * PI * 3) * 0.0254) * 60;
+const double MAX_Y_RPM = MAX_FORWARD_MPS / ((2 * apes::PI * 3) * 0.0254) * 60;
 const double ACTUAL_MAX_Y_RPM = MAX_Y_RPM;
 
 const double ACTUAL_MAX_Y_RPM_AUTON = ACTUAL_MAX_Y_RPM;
@@ -147,9 +145,9 @@ const double SWERVE_MOD_DRIVE_RATIO = 7.39;
 const double WHEEL_RADIUS = 0.0762;
 const double METER_TO_INCHES = 39.3701;
 const double INCHES_TO_METER = 0.0254;
-const double WHEEL_CIRCUMFERENCE = 4 * PI;
-const double METERS_PER_WHEEL_ROTATION = WHEEL_RADIUS * 2 * PI;
-const double ANGLE_TO_TICKS_SWERVE_YAW = (TICKS_PER_ROTATION_FALCON * SWERVE_MOD_ROTATE_RATIO) / (2 * PI);
+const double WHEEL_CIRCUMFERENCE = 4 * apes::PI;
+const double METERS_PER_WHEEL_ROTATION = WHEEL_RADIUS * 2 * apes::PI;
+const double ANGLE_TO_TICKS_SWERVE_YAW = (TICKS_PER_ROTATION_FALCON * SWERVE_MOD_ROTATE_RATIO) / (2 * apes::PI);
 const double FALCON_MS_PER_UPDATE = 100.0;
 const double MS_PER_SECOND = 1000.0;
 

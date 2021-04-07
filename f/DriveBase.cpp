@@ -322,12 +322,12 @@ void DriveBase::TeleopWCDrive(Joystick *JoyThrottle, //finds targets for the Con
 	if (pos_yaw) { //pos control wheel
 	///	led_solenoid->Set(false);
 
-			double target_heading = init_heading + (-1.0 * JoyWheel->GetX() * (90.0 * apes::PI / 180.0));
+			double target_heading = init_heading + (-1.0 * JoyWheel->GetX() * (90.0 * PI / 180.0));
 		frc::SmartDashboard::PutNumber("init head", init_heading);
 			frc::SmartDashboard::PutNumber("targ head", target_heading);
 		//frc::SmartDashboard::PutNumber("targ yaw to", visionDrive->GetYawToTarget());
 
-			double current_heading = -1.0 * ahrs->GetYaw() * ( apes::PI / 180.0); //degrees to radians, left should be positive
+			double current_heading = -1.0 * ahrs->GetYaw() * ( PI / 180.0); //degrees to radians, left should be positive
 		frc::SmartDashboard::PutNumber("cur head", current_heading);
 			double error_heading = target_heading - current_heading;
 		frc::SmartDashboard::PutNumber("error head", error_heading);
@@ -344,7 +344,7 @@ void DriveBase::TeleopWCDrive(Joystick *JoyThrottle, //finds targets for the Con
 	// k_p_right_vel = 0.015;
 	// k_p_yaw_vel = 20.0;
 
-    double current_heading = -1.0 * ahrs->GetYaw() * ( apes::PI / 180.0); //degrees to radians, left should be positive
+    double current_heading = -1.0 * ahrs->GetYaw() * ( PI / 180.0); //degrees to radians, left should be positive
 		double yaw_angle = 0.0f;
 		double target_heading = last_target_heading;
 
@@ -428,9 +428,9 @@ void DriveBase::RotationController(Joystick *JoyWheel) {
 //	frc::SmartDashboard::PutNumber("joyWheel", JoyWheel->GetX());
 
 	double target_heading = init_heading
-			+ (-1.0 * JoyWheel->GetX() * (90.0 * apes::PI / 180.0)); //scaling, conversion to radians,left should be positive
+			+ (-1.0 * JoyWheel->GetX() * (90.0 * PI / 180.0)); //scaling, conversion to radians,left should be positive
 
-	double current_heading = -1.0 * ahrs->GetYaw() * ( apes::PI / 180.0); //degrees to radians, left should be positive
+	double current_heading = -1.0 * ahrs->GetYaw() * ( apesPI / 180.0); //degrees to radians, left should be positive
 
 //	frc::SmartDashboard::PutNumber("current heading", current_heading);
 //	frc::SmartDashboard::PutNumber("target heading", target_heading);

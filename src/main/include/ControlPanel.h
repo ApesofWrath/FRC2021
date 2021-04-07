@@ -19,36 +19,37 @@ enum Colors {
 };
 
 
-Colors ColorFromFRCColor(frc::Color);
+// Colors ColorFromFRCColor(frc::Color);
 
 class ControlPanel {
 
 public:
-    // TalonSRX* talon;
-    rev::CANSparkMax *controlPanelArm, *controlPanelRotator;
-    rev::CANEncoder *controlPanelArmEncoder, *controlPanelRotatorEncoder;
-    rev::CANPIDController *controlPanelArmPID, *controlPanelRotatorPID;
-    std::string getColor(Colors c);
+
+    // // TalonSRX* talon;
+    // rev::CANSparkMax *controlPanelArm, *controlPanelRotator;
+    // rev::CANEncoder *controlPanelArmEncoder, *controlPanelRotatorEncoder;
+    // rev::CANPIDController *controlPanelArmPID, *controlPanelRotatorPID;
+    // std::string getColor(Colors c);
 
     ControlPanel();
 
-    const int controlPanelArmSpark = 31; 
-    const int controlPanelRotatorSpark = 32;
+    // const int controlPanelArmSpark = 31; 
+    // const int controlPanelRotatorSpark = 32;
 
-    // const int rotCount = 3;
-    // const double rotRatio = 10; //Change to actual ratio @ comp
+    // // const int rotCount = 3;
+    // // const double rotRatio = 10; //Change to actual ratio @ comp
 
-    const double rotationModeRot = (COLOR_WHEEL_ROTATIONS/(2*apes::PI))*63;
-    const int controlPanelGoSpeed = (COLOR_SPEED/(2*apes::PI))*60;
-    const int controlPanelStopSpeed = 0;
-    const double armRaisePos = (ARM_POSITION/(2*apes::PI))*63;
-    double controlPanelArmStartPos;
-    double controlPanelWheelStartPos;
+    // const double rotationModeRot = (COLOR_WHEEL_ROTATIONS / (2 * apes::PI)) * 63;
+    // const int controlPanelGoSpeed = (COLOR_SPEED/(2*apes::PI))*60;
+    // const int controlPanelStopSpeed = 0;
+    // const double armRaisePos = (ARM_POSITION/(2*apes::PI))*63;
+    // double controlPanelArmStartPos;
+    // double controlPanelWheelStartPos;
 
 
 
     // const int CONTROL_PANEL_TALON = 1000;
-    const double CONTROL_PANEL_SPEEN_ON = 1.0f;
+    // const double CONTROL_PANEL_SPEEN_ON = 1.0f;
     enum States {
         IDLE,
         POSITION_MODE,
@@ -56,28 +57,28 @@ public:
         HUMAN_LOAD
     };
 
-    int rotationsCompleted = 0;
-    Colors desiredColor = Colors::WHITE;
+    // int rotationsCompleted = 0;
+    // Colors desiredColor = Colors::WHITE;
 
     void StateMachine();
-    inline void PositionMode() { state = States::POSITION_MODE; };
-    inline void RotationMode() { state = States::ROTATION_MODE; };
-    inline void IdleMode() { state = States::IDLE; };
+    // inline void PositionMode() { state = States::POSITION_MODE; };
+    // inline void RotationMode() { state = States::ROTATION_MODE; };
+    // inline void IdleMode() { state = States::IDLE; };
     
-    inline bool HasReachedPosition(Colors detectedColor) { return detectedColor == desiredColor; };
+    // inline bool HasReachedPosition(Colors detectedColor) { return detectedColor == desiredColor; };
     
-    void Rotate();
-    void Stop();
+    // void Rotate();
+    // void Stop();
 
 
 
-    inline void ResetRotations() { rotationsCompleted = 0; };
-    inline void DesireColor(Colors color) { desiredColor = color; };
+    // inline void ResetRotations() { rotationsCompleted = 0; };
+    // inline void DesireColor(Colors color) { desiredColor = color; };
 
 
-    static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
-    rev::ColorSensorV3 m_colorSensor{i2cPort};
-    frc::Color detectedColor;
+    // static constexpr auto i2cPort = frc::I2C::Port::kOnboard;
+    // rev::ColorSensorV3 m_colorSensor{i2cPort};
+    // frc::Color detectedColor;
 
     
 

@@ -13,6 +13,7 @@
 #define SHOOTER_SPEED 594.3893301
 #define MOTOR_ROTATION_PER_HALF_BELT_ROTATION 26.1799387799
 
+
 enum Distances{
         CLOSE = 0,
         MEDIUM = 1,
@@ -21,7 +22,6 @@ enum Distances{
 
 class Shooter {
     public:
-
     // const int topRollerSpark = 2;
     // const int bottomRollerSpark = 3;
     double k_P_shooter = 10.8, k_I_shooter = 0, k_D_shooter = 0.0, k_Iz_shooter = 0, k_FF_shooter = 0; // Not tuned yet

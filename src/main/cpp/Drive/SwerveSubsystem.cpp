@@ -29,11 +29,11 @@ frc::Rotation2d SwerveSubsystem::GetHeading() {
     return frc::Rotation2d((units::degree_t)std::remainder(-m_ahrs->GetAngle(), 360));
 }
 
-void SwerveSubsystem::GoDistance(double distance, double angle){ // should be in meters
-    m_swerve->SetAllTargetAngle(angle);
-    m_swerve->SetDriveTargetVelocity(distance);
+// void SwerveSubsystem::GoDistance(double distance, double angle){ // should be in meters
+//     m_swerve->SetAllTargetAngle(angle);
+//     m_swerve->SetDriveTargetVelocity(distance);
     
-}
+// }
 
 std::array<double, 4> SwerveSubsystem::GetCurrentPositions(){
     

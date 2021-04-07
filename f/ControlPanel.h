@@ -38,10 +38,10 @@ public:
     // const int rotCount = 3;
     // const double rotRatio = 10; //Change to actual ratio @ comp
 
-    const double rotationModeRot = (COLOR_WHEEL_ROTATIONS/(2*apes::PI))*63;
-    const int controlPanelGoSpeed = (COLOR_SPEED/(2*apes::PI))*60;
+    const double rotationModeRot = (COLOR_WHEEL_ROTATIONS/(2 * PI))*63;
+    const int controlPanelGoSpeed = (COLOR_SPEED/(2 * PI))*60;
     const int controlPanelStopSpeed = 0;
-    const double armRaisePos = (ARM_POSITION/(2*apes::PI))*63;
+    const double armRaisePos = (ARM_POSITION/(2 * PI))*63;
     double controlPanelArmStartPos;
     double controlPanelWheelStartPos;
 

@@ -62,10 +62,10 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
 
     frc::Trajectory trajectory, trajectory1, trajectory2, trajectoryTurn;
     const frc::TrapezoidProfile<units::radians>::Constraints
-        kThetaControllerConstraints{units::radians_per_second_t(3.142), units::meters_per_second_squared_t(4.5)};
+        kThetaControllerConstraints{};
     // /\ not real put in right numbers
 
-    frc2::SwerveControllerCommand<4> *ramseteCommand, *ramseteCommand2, *ramseteCommandTurn;
+    frc2::SwerveControllerCommand<4> *ramseteCommand; //, *ramseteCommand2, *ramseteCommandTurn;
 
     switch (m_autoSelected) {
         case CROSS_INIT_LINE:

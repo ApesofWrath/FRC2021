@@ -175,7 +175,7 @@ void Robot::TeleopPeriodic() {
 
 // }}
 
-// void Robot::TestPeriodic() {}
+void Robot::TestPeriodic() {}
 
 
 

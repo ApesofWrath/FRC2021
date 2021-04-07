@@ -86,16 +86,16 @@ void SwerveDrive::Update(frc::Joystick* joy) {
         double y = -joy->GetY();
         if (abs(y) < 0.05) y = 0;
 
-        double angle = std::atan2(y, x) + PI / 2.0;
+        double angle = std::atan2(y, x) + apes::PI / 2.0;
 
         // angle = PI / 2.0;
         double mag = std::abs(std::sqrt(x * x + y * y));
-        if (angle < PI / 2.0 && lastAngle > 3 * PI / 2.0) {
-            angle += 2 * PI;
+        if (angle < apes::PI / 2.0 && lastAngle > 3 * apes::PI / 2.0) {
+            angle += 2 * apes::PI;
         }
 
-        if (lastAngle < PI / 2.0 && angle > 3 * PI / 2.0) {
-            angle -= 2 * PI;
+        if (lastAngle < apes::PI / 2.0 && angle > 3 * apes::PI / 2.0) {
+            angle -= 2 * apes::PI;
         }
 
 
@@ -113,7 +113,7 @@ void SwerveDrive::Update(frc::Joystick* joy) {
         double vy = -joy->GetY();
         if (abs(vy) < 0.05) vy = 0;
 
-        double omega = joy->GetZ() * PI;
+        double omega = joy->GetZ() * apes::PI;
 
         double A = vx - omega * (L / 2.0);
         double B = vx + omega * (L / 2.0);
@@ -126,7 +126,7 @@ void SwerveDrive::Update(frc::Joystick* joy) {
 
 
             m_FrontRight.driveMotor->Set(ControlMode::Velocity, speed);
-            m_FrontRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+            m_FrontRight.yawMotor->Set(ControlMode::Position, (angle / (2 * apes::PI)) * 2048);
         }
 
         { // Wheel 2 (FL)
@@ -135,7 +135,7 @@ void SwerveDrive::Update(frc::Joystick* joy) {
 
 
             m_FrontLeft.driveMotor->Set(ControlMode::Velocity, speed);
-            m_FrontLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+            m_FrontLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * apes::PI)) * 2048);
         }
 
         { // Wheel 3 (BL)
@@ -144,7 +144,7 @@ void SwerveDrive::Update(frc::Joystick* joy) {
 
 
             m_BackLeft.driveMotor->Set(ControlMode::Velocity, speed);
-            m_BackLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+            m_BackLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * apes::PI)) * 2048);
         }
 
         { // Wheel 4 (BR)
@@ -153,7 +153,7 @@ void SwerveDrive::Update(frc::Joystick* joy) {
 
 
             m_BackRight.driveMotor->Set(ControlMode::Velocity, speed);
-            m_BackRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+            m_BackRight.yawMotor->Set(ControlMode::Position, (angle / (2 * apes::PI)) * 2048);
         }
 
     }
@@ -180,7 +180,7 @@ void SwerveDrive::SetMovement(double speed, double movementDirection, double fac
 
 
         m_FrontRight.driveMotor->Set(ControlMode::Velocity, speed);
-        m_FrontRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+        m_FrontRight.yawMotor->Set(ControlMode::Position, (angle / (2 * apes::PI)) * 2048);
     }
 
     { // Wheel 2 (FL)
@@ -189,7 +189,7 @@ void SwerveDrive::SetMovement(double speed, double movementDirection, double fac
 
 
         m_FrontLeft.driveMotor->Set(ControlMode::Velocity, speed);
-        m_FrontLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+        m_FrontLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * apes::PI)) * 2048);
     }
 
     { // Wheel 3 (BL)
@@ -198,7 +198,7 @@ void SwerveDrive::SetMovement(double speed, double movementDirection, double fac
 
 
         m_BackLeft.driveMotor->Set(ControlMode::Velocity, speed);
-        m_BackLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+        m_BackLeft.yawMotor->Set(ControlMode::Position, (angle / (2 * apes::PI)) * 2048);
     }
 
     { // Wheel 4 (BR)
@@ -207,7 +207,7 @@ void SwerveDrive::SetMovement(double speed, double movementDirection, double fac
 
 
         m_BackRight.driveMotor->Set(ControlMode::Velocity, speed);
-        m_BackRight.yawMotor->Set(ControlMode::Position, (angle / (2 * PI)) * 2048);
+        m_BackRight.yawMotor->Set(ControlMode::Position, (angle / (2 * apes::PI)) * 2048);
     }
 }
 

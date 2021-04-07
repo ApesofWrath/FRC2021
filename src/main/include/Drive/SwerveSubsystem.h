@@ -30,7 +30,7 @@ class SwerveSubsystem : public frc2::SubsystemBase {
 
     void Periodic() override; //runs regardless of state
     
-    void GoDistance(double distance, double angle);
+    // void GoDistance(double distance, double angle);
 
 
     void StopAll();
@@ -41,8 +41,8 @@ class SwerveSubsystem : public frc2::SubsystemBase {
 
     void ZeroEncoders();
 
-    void SetAllTargetAngle(double angle);
-    void SetDriveTargetVelocity(double speed);
+    // void SetAllTargetAngle(double angle);
+    // void SetDriveTargetVelocity(double speed);
 
     // use _t after the desired unit or else it wont like you
     const units::meter_t x_offset = 11_in;
