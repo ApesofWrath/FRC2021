@@ -39,7 +39,7 @@ public:
 
     SwerveDrive(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight); // SwerveDrive({0, 4}, {1, 5}, {2, 6}, {3, 7});
 
-    void Update(frc::Joystick* joy);
+    void Update(frc::Joystick* joy, frc::Joystick *joyWheel);
 
     void StopAll();
     void StopDrive();

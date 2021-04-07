@@ -59,7 +59,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
     // Hardcode
     frc::Pose2d start, end;
     std::vector<frc::Translation2d> points;
-
+    // m_autoSelected = CROSS_INIT_LINE;
     frc::Trajectory trajectory, trajectory1, trajectory2, trajectoryTurn;
     const frc::TrapezoidProfile<units::radians>::Constraints
         kThetaControllerConstraints{};
@@ -70,7 +70,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
     if(CROSS_INIT_LINE == m_autoSelected){
             std::cout << "cil\n";
             start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
-            end = frc::Pose2d(1_m, 0_m, frc::Rotation2d(0_deg));
+            end = frc::Pose2d(0.5_m, 0_m, frc::Rotation2d(0_deg));
             points = {};
             std::cout << "cil2\n";
             trajectory = frc::TrajectoryGenerator::GenerateTrajectory(

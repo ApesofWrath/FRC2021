@@ -56,7 +56,7 @@ void Robot::RobotInit() {
 //   m_container->InitAutoChoices();
 //   std::cout << "auto choices init complete\n";
 
-//   frc::SmartDashboard::PutData("Auto Modes", &(m_container->m_chooser));
+  frc::SmartDashboard::PutData("Auto Modes", &(m_container->m_chooser));
 // /*
 //   m_descolor_chooser.AddDefault("None",  Colors::WHITE);
 //   m_descolor_chooser.AddObject("Red",    Colors::RED);
@@ -160,7 +160,7 @@ void Robot::TeleopInit() {
   m_SwerveDrive->StopAll();
 }
 void Robot::TeleopPeriodic() {
-  m_SwerveDrive->Update(m_Joy);
+  m_SwerveDrive->Update(m_Joy, JoyWheel);
   // drive->RunTeleopDrive(JoyThrottle, JoyWheel, true, false, false);
   tsm->StateMachine(tsm->GatherButtonDataFromJoysticks(
     JoyThrottle, JoyWheel, JoyOp));
