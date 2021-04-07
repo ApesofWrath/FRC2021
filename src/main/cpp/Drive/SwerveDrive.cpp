@@ -7,13 +7,13 @@
 SwerveModule_Falcon::SwerveModule_Falcon(SwerveModule module, PIDSettings drive, PIDSettings yaw) {
     driveMotor = new TalonFX(module.driveMotor);
     driveMotor->Config_kP(0, drive.kP);
-    driveMotor->Config_kI(0, drive.kI);
-    driveMotor->Config_kD(0, drive.kD);
+    driveMotor->Config_kI(0, 0);
+    driveMotor->Config_kD(0, 0);
 
     yawMotor = new TalonFX(module.yawMotor);
     yawMotor->Config_kP(0, yaw.kP);
-    yawMotor->Config_kI(0, yaw.kI);
-    yawMotor->Config_kD(0, yaw.kD);
+    yawMotor->Config_kI(0, 0);
+    yawMotor->Config_kD(0, 0);
 }
 
 void SwerveModule_Falcon::ConfigPIDYaw(double p, double i, double d) {
@@ -40,6 +40,11 @@ void SwerveModule_Falcon::Reverse() {
 const double L = 73.66;
 const double W = 73.66;
 
+double lastAngle_fr = 0;
+double lastAngle_fl = 0;
+double lastAngle_br = 0;
+double lastAngle_bl = 0;
+
 SwerveDrive::SwerveDrive(SwerveModule frontLeft, SwerveModule frontRight, SwerveModule backLeft, SwerveModule backRight) : 
             m_FrontLeft(frontLeft, SWERVE_CONFIG_PID.kFrontLeftDrive, SWERVE_CONFIG_PID.kFrontLeftYaw),
             m_FrontRight(frontRight, SWERVE_CONFIG_PID.kFrontRightDrive, SWERVE_CONFIG_PID.kFrontRightYaw),
@@ -51,8 +56,21 @@ SwerveDrive::SwerveDrive(SwerveModule frontLeft, SwerveModule frontRight, Swerve
     frc::SmartDashboard::PutNumber("Kp Yaw FR", SWERVE_CONFIG_PID.kFrontRightYaw.kP);
     frc::SmartDashboard::PutNumber("Kp Yaw BL", SWERVE_CONFIG_PID.kBackLeftYaw.kP);
     frc::SmartDashboard::PutNumber("Kp Yaw BR", SWERVE_CONFIG_PID.kBackRightYaw.kP);
+
+    lastAngle_fr = m_FrontRight.yawMotor->GetSelectedSensorPosition() / ANGLE_TO_TICKS_SWERVE_YAW;
+    lastAngle_fl = m_FrontLeft.yawMotor->GetSelectedSensorPosition() / ANGLE_TO_TICKS_SWERVE_YAW;
+    lastAngle_br = m_BackRight.yawMotor->GetSelectedSensorPosition() / ANGLE_TO_TICKS_SWERVE_YAW;
+    lastAngle_bl = m_BackLeft.yawMotor->GetSelectedSensorPosition() / ANGLE_TO_TICKS_SWERVE_YAW;
 }
-double lastAngle = 0;
+
+
+double shortest(double dst, double lst) {
+    double err = std::fmod((dst - lst), PI);
+    if (std::fmod((dst - lst), PI * 2) > PI) {
+        err -= PI;
+    }
+    return lst + err;
+}
 
 void SwerveDrive::Update(frc::Joystick* joy, frc::Joystick* joyWheel) {
     // if (joy->GetTriggerPressed()) {
@@ -65,10 +83,10 @@ void SwerveDrive::Update(frc::Joystick* joy, frc::Joystick* joyWheel) {
     // frc::SmartDashboard::PutNumber("!w3 angle ", m_BackLeft.yawMotor->GetSelectedSensorPosition());
     // frc::SmartDashboard::PutNumber("!w4 angle ", m_BackRight.yawMotor->GetSelectedSensorPosition());
 
-    double kp_y_fl = drive_debug::kP_fl.GetDouble(SWERVE_CONFIG_PID.kFrontLeftDrive.kP);
-    double kp_y_fr = drive_debug::kP_fr.GetDouble(SWERVE_CONFIG_PID.kFrontRightDrive.kP);
-    double kp_y_bl = drive_debug::kP_bl.GetDouble(SWERVE_CONFIG_PID.kBackLeftDrive.kP);
-    double kp_y_br = drive_debug::kP_br.GetDouble(SWERVE_CONFIG_PID.kBackRightDrive.kP);
+    double kp_y_fl = 0.1;
+    double kp_y_fr = 0.1;
+    double kp_y_bl = 0.1;
+    double kp_y_br = 0.1;
 
     m_FrontLeft.yawMotor->Config_kP(0, kp_y_fl);
     m_FrontRight.yawMotor->Config_kP(0, kp_y_fr);
@@ -131,7 +149,7 @@ void SwerveDrive::Update(frc::Joystick* joy, frc::Joystick* joyWheel) {
 
     double vx = joy->GetX() * 100;
     if (abs(vx) < 0.05) vx = 0;
-    double vy = joy->GetY() * 100;
+    double vy = -joy->GetY() * 100;
     if (abs(vy) < 0.05) vy = 0;
 
     double omega = joyWheel->GetX() * PI;
@@ -143,17 +161,19 @@ void SwerveDrive::Update(frc::Joystick* joy, frc::Joystick* joyWheel) {
 
     { // Wheel 1 (FR)
         double speed = std::sqrt(B * B + C * C);
-        double angle = std::atan2(B, C);
+        double angle = shortest(std::atan2(B, C), lastAngle_fr);
+        lastAngle_fr = angle;
         frc::SmartDashboard::PutNumber("!w1 speed ", speed);
         frc::SmartDashboard::PutNumber("!w1 angle ", angle);
 
-        m_FrontRight.driveMotor->Set(ControlMode::Velocity, speed * 10);
+        m_FrontRight.driveMotor->Set(ControlMode::Velocity, speed * 100);
         m_FrontRight.yawMotor->Set(ControlMode::Position, angle * ANGLE_TO_TICKS_SWERVE_YAW);
     }
 
     { // Wheel 2 (FL)
         double speed = std::sqrt(B * B + D * D);
-        double angle = std::atan2(B, D);
+        double angle = shortest(std::atan2(B, D), lastAngle_fl);
+        lastAngle_fl = angle;
         frc::SmartDashboard::PutNumber("!w2 speed ", speed);
         frc::SmartDashboard::PutNumber("!w2 angle ", angle);
         
@@ -163,7 +183,9 @@ void SwerveDrive::Update(frc::Joystick* joy, frc::Joystick* joyWheel) {
 
     { // Wheel 3 (BL)
         double speed = std::sqrt(A * A + D * D);
-        double angle = std::atan2(A, D);
+        double angle = shortest(std::atan2(A, D), lastAngle_bl);
+        lastAngle_bl = angle;
+
         frc::SmartDashboard::PutNumber("!w3 speed ", speed);
         frc::SmartDashboard::PutNumber("!w3 angle ", angle);
 
@@ -173,7 +195,9 @@ void SwerveDrive::Update(frc::Joystick* joy, frc::Joystick* joyWheel) {
 
     { // Wheel 4 (BR)
         double speed = std::sqrt(A * A + C * C);
-        double angle = std::atan2(A, C);
+        double angle = shortest(std::atan2(A, C), lastAngle_br);
+        lastAngle_br = angle;
+
         frc::SmartDashboard::PutNumber("!w4 speed ", speed);
         frc::SmartDashboard::PutNumber("!w4 angle ", angle);
         

@@ -99,6 +99,10 @@ void Robot::RobotInit() {
 }
 
 void Robot::RobotPeriodic() {
+  if (m_Joy->GetRawButton(11)) {
+    m_SwerveDrive->ZeroEncoders();
+    std::cout<< "Zeroed\n";
+  }
   // frc2::CommandScheduler::GetInstance().Run();
 
 }
