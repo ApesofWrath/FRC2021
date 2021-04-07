@@ -63,7 +63,9 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
     frc::Trajectory trajectory, trajectory1, trajectory2, trajectoryTurn;
     const frc::TrapezoidProfile<units::radians>::Constraints
         kThetaControllerConstraints{units::radians_per_second_t(3.142), units::meters_per_second_squared_t(4.5)};
-    frc2::SwerveControllerCommand *ramseteCommand, *ramseteCommand2, *ramseteCommandTurn;
+    // /\ not real put in right numbers
+
+    frc2::SwerveControllerCommand<4> *ramseteCommand, *ramseteCommand2, *ramseteCommandTurn;
 
     switch (m_autoSelected) {
         case CROSS_INIT_LINE:
@@ -77,18 +79,20 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 points,
                 end,
                 *config);
-            ramseteCommand = new frc2::SwerveControllerCommand(
-                trajectory, [this]() { return m_swerve_subsystem->GetPose(); },
+            ramseteCommand = new frc2::SwerveControllerCommand<4>(
+                trajectory, 
+                [this]() { return m_swerve_subsystem->GetPose(); },
                 m_swerve_subsystem->m_kinematics,
-                frc::SimpleMotorFeedforward<units::meters>(
-                    K_S, K_V, K_A),
-                K_DRIVE_KINEMATICS,
                 frc2::PIDController(K_P_LEFT_VEL, 0, 0),
                 frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
-                frc::ProfiledPIDController<units::meter_t>(0, 0, 0, config));
+                frc::ProfiledPIDController<units::radians>(0, 0, 0, kThetaControllerConstraints, 20_ms),
+                [this](auto swerve_states){ m_swerve_subsystem->SetModuleStates(swerve_states); },
+                {m_swerve_subsystem}
+                );
             m_swerve_subsystem->BuildOdometry(start);
             return new frc2::SequentialCommandGroup(
-                std::move(*ramseteCommand),
+                // std::move(*ramseteCommand),
+                
                 // frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {})
             );
         break;

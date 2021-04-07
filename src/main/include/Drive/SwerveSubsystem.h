@@ -20,6 +20,8 @@
 #include <vector>
 #include <list>
 #include <frc/PWMTalonFx.h>
+#include <frc/SerialPort.h>
+#include <frc/kinematics/SwerveModuleState.h>
 
 class SwerveSubsystem : public frc2::SubsystemBase {
     public: 
@@ -34,6 +36,8 @@ class SwerveSubsystem : public frc2::SubsystemBase {
     void StopAll();
     void StopDrive();
     void StopYaw();
+
+    void SetModuleStates(std::array<frc::SwerveModuleState, 4> desired_states);
 
     void ZeroEncoders();
 

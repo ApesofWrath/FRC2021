@@ -1,10 +1,10 @@
 #include "Drive/SwerveSubsystem.h"
 #include "Drive/SwerveDrive.h"
 
-SwerveSubsystem::SwerveSubsystem(SwerveDrive *swerve, frc::Joystick *joyOp, AHRS *ahrs){
+SwerveSubsystem::SwerveSubsystem(SwerveDrive *swerve, frc::Joystick *joyOp){
     m_swerve = swerve;
     m_joystick = joyOp;
-    m_ahrs = new AHRS(SerialPort::kUSB);
+    m_ahrs = new AHRS(frc::SerialPort::kUSB);
     
     // m_kinematics = new frc::SwerveDriveKinematics<4>(
     //     m_front_left_location, m_front_right_location,
@@ -14,6 +14,10 @@ SwerveSubsystem::SwerveSubsystem(SwerveDrive *swerve, frc::Joystick *joyOp, AHRS
     frc::Rotation2d this_is_rotation = GetHeading(); 
 
     m_odometry = new frc::SwerveDriveOdometry<4>(m_kinematics, this_is_rotation, this_is_pose); //, frc::Pose2d(0_m, 0_m, 0_rad)
+    
+}
+
+void SwerveSubsystem::SetModuleStates(std::array<frc::SwerveModuleState, 4> desired_states) {
     
 }
 
