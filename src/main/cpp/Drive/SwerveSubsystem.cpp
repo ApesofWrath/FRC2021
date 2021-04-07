@@ -23,6 +23,7 @@ void SwerveSubsystem::SetModuleStates(std::array<frc::SwerveModuleState, 4> desi
 
 void SwerveSubsystem::Periodic() {
     //put update function?
+
 }
 
 frc::Rotation2d SwerveSubsystem::GetHeading() {
@@ -53,6 +54,5 @@ frc::Pose2d SwerveSubsystem::GetPose() {
 void SwerveSubsystem::BuildOdometry(frc::Pose2d pose) {
   m_ahrs->Reset();
   m_ahrs->ZeroYaw();
-  m_odometry->ResetPosition(pose,
-                           GetHeading());
+  m_odometry->ResetPosition(pose, GetHeading());
 }

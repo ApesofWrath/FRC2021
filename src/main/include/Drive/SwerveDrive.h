@@ -2,6 +2,7 @@
 #include "Drive/DriveConstants.h"
 #include <frc/Joystick.h>
 #include <ctre/Phoenix.h>
+#include <frc/kinematics/SwerveModuleState.h>
 #include <array>
 
 #include "AHRS.h"
@@ -58,4 +59,5 @@ public:
 
     std::array<double, 4> GetAllDrivePositions();
 
+    void SetSwerveStates(std::array<frc::SwerveModuleState, 4> desired_states);
 };

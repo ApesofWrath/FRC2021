@@ -311,3 +311,14 @@ std::array<double, 4> SwerveDrive::GetAllDrivePositions(){
         m_BackRight.driveMotor->GetSelectedSensorPosition()};
 }
 
+void SwerveDrive::SetSwerveStates(std::array<frc::SwerveModuleState, 4> desired_states) {
+    m_FrontLeft.driveMotor->Set(ControlMode::Velocity, (double) (desired_states[0].speed));
+    m_FrontRight.driveMotor->Set(ControlMode::Velocity, (double) (desired_states[1].speed));
+    m_BackLeft.driveMotor->Set(ControlMode::Velocity, (double) (desired_states[2].speed));
+    m_BackRight.driveMotor->Set(ControlMode::Velocity, (double) (desired_states[3].speed));
+
+    m_FrontLeft.yawMotor->Set(ControlMode::Position, (double) (desired_states[0].angle.Degrees()));
+    m_FrontRight.yawMotor->Set(ControlMode::Position, (double) (desired_states[1].angle.Degrees()));
+    m_BackLeft.yawMotor->Set(ControlMode::Position, (double) (desired_states[2].angle.Degrees()));
+    m_BackRight.yawMotor->Set(ControlMode::Position, (double) (desired_states[3].angle.Degrees()));
+}

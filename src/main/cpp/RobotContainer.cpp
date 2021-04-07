@@ -63,12 +63,11 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
     frc::Trajectory trajectory, trajectory1, trajectory2, trajectoryTurn;
     const frc::TrapezoidProfile<units::radians>::Constraints
         kThetaControllerConstraints{};
-    // /\ not real put in right numbers
+    // /\ not real put in right numbers (max velo, max accel)
 
-    frc2::SwerveControllerCommand<4> *ramseteCommand; //, *ramseteCommand2, *ramseteCommandTurn;
+    // frc2::SwerveControllerCommand<4> *swerve_command; //, *ramseteCommand2, *ramseteCommandTurn;
 
-    switch (m_autoSelected) {
-        case CROSS_INIT_LINE:
+    if(CROSS_INIT_LINE == m_autoSelected){
             std::cout << "cil\n";
             start = frc::Pose2d(0_m, 0_m, frc::Rotation2d(0_deg));
             end = frc::Pose2d(1_m, 0_m, frc::Rotation2d(0_deg));
@@ -79,23 +78,23 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
                 points,
                 end,
                 *config);
-            ramseteCommand = new frc2::SwerveControllerCommand<4>(
-                trajectory, 
-                [this]() { return m_swerve_subsystem->GetPose(); },
-                m_swerve_subsystem->m_kinematics,
-                frc2::PIDController(K_P_LEFT_VEL, 0, 0),
-                frc2::PIDController(K_P_RIGHT_VEL, 0, 0),
-                frc::ProfiledPIDController<units::radians>(0, 0, 0, kThetaControllerConstraints, 20_ms),
-                [this](auto swerve_states){ m_swerve_subsystem->SetModuleStates(swerve_states); },
-                {m_swerve_subsystem}
+            frc2::SwerveControllerCommand<4> swerve_command(
+                    trajectory, 
+                    [this]() { return m_swerve_subsystem->GetPose(); },
+                    m_swerve_subsystem->m_kinematics,
+                    frc2::PIDController(K_P_LEFT_VEL, 0, 0), // x contrller
+                    frc2::PIDController(K_P_RIGHT_VEL, 0, 0), // y controller
+                    frc::ProfiledPIDController<units::radians>(0, 0, 0, kThetaControllerConstraints, 20_ms), // yaw controller
+                    [this](auto swerve_states){ m_swerve_subsystem->SetModuleStates(swerve_states); },
+                    {m_swerve_subsystem}
                 );
             m_swerve_subsystem->BuildOdometry(start);
             return new frc2::SequentialCommandGroup(
-                // std::move(*ramseteCommand),
+                std::move(swerve_command)
                 
                 // frc2::InstantCommand([this] { m_drive->TankDriveVolts(0_V, 0_V); }, {})
             );
-        break;
+
 
         // case SHOOT_PRELOAD:
         //     std::cout << "sp\n";
@@ -211,12 +210,11 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
         //         frc2::InstantCommand([this] { m_shooter->shooter_state = m_shooter->STOP_STATE;})
         //     );  
         // break;
-        default:
+    }else{
             std::cout << "df\n";
             return new frc2::InstantCommand([this] { frc::SmartDashboard::PutString("status","Why aren't you running auton??");});
-        break;
     }
-}
+    }
 
 void RobotContainer::ConfigureButtonBindings() {
     m_joystick = new frc::Joystick(2);
