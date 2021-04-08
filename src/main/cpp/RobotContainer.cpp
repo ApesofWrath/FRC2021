@@ -59,7 +59,7 @@ frc2::Command* RobotContainer::GetAutonomousCommand() {
     // Hardcode
     frc::Pose2d start, end;
     std::vector<frc::Translation2d> points;
-    // m_autoSelected = CROSS_INIT_LINE;
+    m_autoSelected = CROSS_INIT_LINE;
     frc::Trajectory trajectory, trajectory1, trajectory2, trajectoryTurn;
     const frc::TrapezoidProfile<units::radians>::Constraints
         kThetaControllerConstraints{};

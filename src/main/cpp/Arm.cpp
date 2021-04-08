@@ -26,8 +26,8 @@ Arm::Arm() {
   // rev::CANSparkMax armSpark0{1, rev::CANSparkMax::MotorType::kBrushless};
   armSparkM0->RestoreFactoryDefaults();
   armSparkM1->RestoreFactoryDefaults();
-  armSparkM0->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-  armSparkM1->SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+  armSparkM0->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  armSparkM1->SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   
   armSparkM1->Follow(*armSparkM0, true); //, true
 

@@ -32,7 +32,6 @@ void Robot::RobotInit() {
 
 
   m_SwerveDrive = new SwerveDrive({0, 4}, {1, 5}, {2, 6}, {3, 7});
-  m_Joy = new frc::Joystick(0);
 
 //   std::cout << "dc\n";
   
@@ -74,12 +73,13 @@ void Robot::RobotInit() {
 //   T46 = new TalonSRX(46);
 //   T46->SetInverted(InvertType::InvertMotorOutput);
 // */
-//   JoyThrottle = new frc::Joystick(0);
-//   JoyWheel = new frc::Joystick(1);
+  JoyThrottle = new frc::Joystick(0);
+  JoyWheel = new frc::Joystick(1);
+  JoyOp = new frc::Joystick(2);
 
-  cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture("668.camera.server", 0);
+  // cs::UsbCamera camera = frc::CameraServer::GetInstance()->StartAutomaticCapture("668.camera.server", 0);
 
-	camera.SetResolution(320, 190);
+	// camera.SetResolution(320, 190);
 
 //   tsm = new TeleopStateMachine(shooter, intake, controlpanel, arm);
   
@@ -160,7 +160,7 @@ void Robot::TeleopInit() {
   m_SwerveDrive->StopAll();
 }
 void Robot::TeleopPeriodic() {
-  m_SwerveDrive->Update(m_Joy, JoyWheel);
+  m_SwerveDrive->Update(JoyThrottle, JoyWheel);
   // drive->RunTeleopDrive(JoyThrottle, JoyWheel, true, false, false);
   tsm->StateMachine(tsm->GatherButtonDataFromJoysticks(
     JoyThrottle, JoyWheel, JoyOp));
